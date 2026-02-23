@@ -46,53 +46,10 @@ export default function Home() {
     <div className="min-h-screen bg-gray-100">
 
 
-    <nav className="bg-white shadow-md px-8 py-4 flex justify-between items-center sticky top-0 z-50">
-
-      {/* Left Side - Logo */}
-      <div className="flex items-center gap-3">
-        <img
-          src="\logo.jpeg"   // apna logo public folder me daalna
-          alt="Chennai Express"
-          className="h-15 w-15 object-contain"
-        />
-        <h1 className="text-xl font-bold text-gray-700">
-          37BITES
-        </h1>
-      </div>
-
-      {/* Middle - Menu Links */}
-      <div className="flex gap-8 text-gray-700 font-medium">
-        <a href="#" className="hover:text-orange-500 transition">Menu</a>
-        <a href="#" className="hover:text-orange-500 transition">Offers</a>
-        <a href="#" className="hover:text-orange-500 transition">Catering</a>
-        <a href="#" className="hover:text-orange-500 transition">About</a>
-        <a href="#" className="hover:text-orange-500 transition">Contact</a>
-      </div>
-
-      {/* Right Side */}
-      <div className="flex items-center gap-4 relative">
-
-        {/* Order Button */}
-        <button className="bg-orange-500 text-white px-5 py-2 rounded-xl hover:bg-orange-600 transition">
-          Order Now
-        </button>
-
-        {/* My Account Button */}
-        <div className="relative">
-          <button
-            onClick={() => setOpen(!open)}
-            className="border border-orange-500 text-orange-500 px-4 py-2 rounded-xl hover:bg-orange-500 hover:text-white transition"
-          >
-            My Account
-          </button>
-
-        </div>
-
-      </div>
-    </nav>
+   
 
  {/* Category Section */}
-<div className="sticky top-[80px] z-40 bg-gray-100 shadow-sm overflow-hidden">
+<div className="sticky top-/[80px] z-40 bg-gray-100 shadow-sm overflow-hidden">
 
   <div className="flex justify-center">
 
@@ -177,24 +134,7 @@ export default function Home() {
         ))}
       </div>
 
-      {/* Footer */}
-      <footer className="bg-gray-800 text-white py-10 px-10 mt-10">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          <div>
-            <h2 className="text-xl font-bold">Chennai Express</h2>
-            <p className="text-gray-400 mt-2">Restaurant & Catering</p>
-          </div>
-          <div>
-            <h3 className="font-semibold">Contact Us</h3>
-            <p className="text-gray-400">+1 703-961-1600</p>
-            <p className="text-gray-400">info@chennaiexpress.com</p>
-          </div>
-          <div>
-            <h3 className="font-semibold">Location</h3>
-            <p className="text-gray-400">14516 Lee Rd, Chantilly</p>
-          </div>
-        </div>
-      </footer>
+
 
     </div>
   );
