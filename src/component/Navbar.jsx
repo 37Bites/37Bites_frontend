@@ -1,50 +1,67 @@
 import React, { useState } from "react";
+import LoginModal from "../pages/LoginModal";
 
 const Navbar = () => {
   const [open, setOpen] = useState(false);
+  const auth = JSON.parse(localStorage.getItem("auth"));
+
+  const handleLogout = () => {
+    localStorage.removeItem("auth");
+    window.location.reload();
+  };
 
   return (
-    <nav className="bg-white shadow-md px-8 py-4 flex justify-between items-center sticky top-0 z-50">
+    <>
+      {/* NAVBAR */}
+      <nav className="bg-white shadow-md px-8 py-4 flex justify-between items-center sticky top-0 z-40">
 
-      {/* Left Side - Logo */}
-      <div className="flex items-center gap-3">
-        <img
-          src="/logo.jpeg"
-          alt="37BITES"
-          className="h-14 w-14 object-contain"
-        />
-        <h1 className="text-xl font-bold text-gray-700">
-          37BITES
-        </h1>
-      </div>
+        {/* Left Logo */}
+        <div className="flex items-center gap-3">
+          <img src="/logo.jpeg" alt="37BITES" className="h-12 w-12" />
+          <h1 className="text-xl font-bold text-gray-700">
+            37BITES
+          </h1>
+        </div>
 
-      {/* Middle - Menu Links */}
-      <div className="flex gap-8 text-gray-700 font-medium">
-        <a href="#" className="hover:text-orange-500 transition">Menu</a>
-        <a href="#" className="hover:text-orange-500 transition">Offers</a>
-        <a href="#" className="hover:text-orange-500 transition">Catering</a>
-        <a href="#" className="hover:text-orange-500 transition">About</a>
-        <a href="#" className="hover:text-orange-500 transition">Contact</a>
-      </div>
+        {/* Middle Menu */}
+        <div className="flex gap-8 text-gray-700 font-medium">
+          <a href="#" className="hover:text-orange-500">Menu</a>
+          <a href="#" className="hover:text-orange-500">Offers</a>
+          <a href="#" className="hover:text-orange-500">Catering</a>
+          <a href="#" className="hover:text-orange-500">About</a>
+          <a href="#" className="hover:text-orange-500">Contact</a>
+        </div>
 
-      {/* Right Side */}
-      <div className="flex items-center gap-4">
+        {/* Right Side */}
+        <div className="flex items-center gap-4">
 
-        {/* Order Button */}
-        <button className="bg-orange-500 text-white px-5 py-2 rounded-xl hover:bg-orange-600 transition">
-          Order Now
-        </button>
+          {auth ? (
+            <>
+              <span className="text-gray-700 font-medium">
+                {auth.user.role.toUpperCase()}
+              </span>
 
-        {/* My Account */}
-        <button
-          onClick={() => setOpen(!open)}
-          className="border border-orange-500 text-orange-500 px-4 py-2 rounded-xl hover:bg-orange-500 hover:text-white transition"
-        >
-          My Account
-        </button>
+              <button
+                onClick={handleLogout}
+                className="bg-red-500 text-white px-4 py-2 rounded-xl"
+              >
+                Logout
+              </button>
+            </>
+          ) : (
+            <button
+              onClick={() => setOpen(true)}
+              className="bg-orange-500 text-white px-5 py-2 rounded-xl"
+            >
+              Login
+            </button>
+          )}
+        </div>
+      </nav>
 
-      </div>
-    </nav>
+      {/* LOGIN MODAL */}
+      {open && <LoginModal closeModal={() => setOpen(false)} />}
+    </>
   );
 };
 
