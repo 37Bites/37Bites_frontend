@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { logout } from "../features/auth/authSlice";
 import LoginModal from "../pages/LoginModal";
@@ -10,16 +10,32 @@ const Navbar = () => {
   const [openModal, setOpenModal] = useState(false);
   const [dropdown, setDropdown] = useState(false);
 
+  const dropdownRef = useRef(null);
+
   const handleLogout = () => {
     dispatch(logout());
     setDropdown(false);
   };
 
+  // Close dropdown on outside click
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setDropdown(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
   return (
     <>
       <nav className="bg-white shadow-md px-8 py-4 flex justify-between items-center sticky top-0 z-50">
         
-        {/* Left - Logo */}
+        {/* Logo */}
         <div className="flex items-center gap-3">
           <img
             src="/logo.jpeg"
@@ -31,7 +47,7 @@ const Navbar = () => {
           </h1>
         </div>
 
-        {/* Center - Menu */}
+        {/* Menu */}
         <div className="flex gap-8 text-gray-700 font-medium">
           <a href="#" className="hover:text-orange-500 transition">Menu</a>
           <a href="#" className="hover:text-orange-500 transition">Offers</a>
@@ -41,14 +57,13 @@ const Navbar = () => {
         </div>
 
         {/* Right Side */}
-        <div className="flex items-center gap-4 relative">
+        <div className="flex items-center gap-4 relative" ref={dropdownRef}>
           
           <button className="bg-orange-500 text-white px-5 py-2 rounded-xl hover:bg-orange-600 transition">
             Order Now
           </button>
 
           {!user ? (
-            // If NOT logged in
             <button
               onClick={() => setOpenModal(true)}
               className="border border-orange-500 text-orange-500 px-4 py-2 rounded-xl hover:bg-orange-500 hover:text-white transition"
@@ -56,17 +71,16 @@ const Navbar = () => {
               My Account
             </button>
           ) : (
-            // If logged in
             <div className="relative">
               <button
-                onClick={() => setDropdown(!dropdown)}
+                onClick={() => setDropdown((prev) => !prev)}
                 className="border border-orange-500 text-orange-500 px-4 py-2 rounded-xl hover:bg-orange-500 hover:text-white transition"
               >
                 {user.role?.toUpperCase()}
               </button>
 
               {dropdown && (
-                <div className="absolute right-0 mt-2 w-44 bg-white shadow-lg rounded-xl py-2">
+                <div className="absolute right-0 mt-2 w-44 bg-white shadow-lg rounded-xl py-2 z-50">
                   <button
                     className="block w-full text-left px-4 py-2 hover:bg-gray-100"
                   >
@@ -87,7 +101,9 @@ const Navbar = () => {
       </nav>
 
       {/* Login Modal */}
-      {openModal && <LoginModal closeModal={() => setOpenModal(false)} />}
+      {openModal && (
+        <LoginModal closeModal={() => setOpenModal(false)} />
+      )}
     </>
   );
 };
