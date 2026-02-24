@@ -4,6 +4,7 @@ import Home from "./pages/Home";
 import MainLayout from "./component/mainlayout";
 import AdminDashboard from "./pages/AdminDashboard/AdminDashboard";
 import AdminHome from "./pages/AdminDashboard/AdminHome";
+import About from "./pages/navbar/About";
 function App() {
   return (
     <BrowserRouter>
@@ -13,6 +14,7 @@ function App() {
         <Route element={<MainLayout />}>
 
           <Route path="/" element={<Home />} />
+          <Route path="/about" element={<About/>}/>
            </Route>
 
            {/* Admin routing */}
