@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import RestaurantSlider from "../component/RestaurantSlider"
+import HeroOfferSlider from "../component/HeroOfferSlider";
 
 const categories = [
   { name: "Asian", img: "https://cdn-icons-png.flaticon.com/512/1046/1046784.png" },
@@ -45,7 +46,7 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-gray-100">
 
-
+<HeroOfferSlider/>
    
 
  {/* Category Section */}
