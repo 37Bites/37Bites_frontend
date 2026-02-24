@@ -1,8 +1,9 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 import Home from "./pages/Home";
-import MainLayout from "./component/MainLayout";
-
+import MainLayout from "./component/mainlayout";
+import AdminDashboard from "./pages/AdminDashboard/AdminDashboard";
+import AdminHome from "./pages/AdminDashboard/AdminHome";
 function App() {
   return (
     <BrowserRouter>
@@ -12,8 +13,12 @@ function App() {
         <Route element={<MainLayout />}>
 
           <Route path="/" element={<Home />} />
+           </Route>
 
-        </Route>
+           {/* Admin routing */}
+            <Route path='/admin' element={<AdminDashboard />}>
+            <Route index element={<AdminHome />} />
+              </Route>
 
       </Routes>
 
