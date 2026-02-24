@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { logout } from "../features/auth/authSlice";
 import LoginModal from "../pages/LoginModal";
+import { NavLink } from "react-router-dom";
 
 const Navbar = () => {
   const dispatch = useDispatch();
@@ -50,9 +51,22 @@ const Navbar = () => {
         {/* Menu */}
         <div className="flex gap-8 text-gray-700 font-medium">
           <a href="#" className="hover:text-orange-500 transition">Menu</a>
-          <a href="#" className="hover:text-orange-500 transition">Offers</a>
-          <a href="#" className="hover:text-orange-500 transition">Catering</a>
-          <a href="#" className="hover:text-orange-500 transition">About</a>
+         <NavLink
+ to="/offers"
+ className="hover:text-orange-500 transition"
+>
+ Offers
+</NavLink>
+          <NavLink
+ to="/catering"
+ className="hover:text-orange-500"
+>
+ Catering
+</NavLink>
+         <NavLink to="/about" 
+  className="hover:text-orange-500 transition">
+  About
+</NavLink>
           <a href="#" className="hover:text-orange-500 transition">Contact</a>
         </div>
 

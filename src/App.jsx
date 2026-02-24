@@ -5,6 +5,8 @@ import MainLayout from "./component/mainlayout";
 import AdminDashboard from "./pages/AdminDashboard/AdminDashboard";
 import AdminHome from "./pages/AdminDashboard/AdminHome";
 import About from "./pages/navbar/About";
+import Offers from "./pages/navbar/offers";
+import Catering from "./pages/navbar/Catering";
 function App() {
   return (
     <BrowserRouter>
@@ -15,6 +17,8 @@ function App() {
 
           <Route path="/" element={<Home />} />
           <Route path="/about" element={<About/>}/>
+          <Route path="/offers" element={<Offers/>} />
+          <Route path="/catering" element={<Catering/>}/>
            </Route>
 
            {/* Admin routing */}
