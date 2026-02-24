@@ -35,7 +35,7 @@ const Contact = () => {
 
 
             <p className="text-gray-600 mb-3">
-              📍 Saint Martin Island
+              📍 Saint Martin 
             </p>
 
 
