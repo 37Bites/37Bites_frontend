@@ -35,7 +35,7 @@ const Navbar = () => {
   return (
     <>
       <nav className="bg-white shadow-md px-8 py-4 flex justify-between items-center sticky top-0 z-50">
-        
+
         {/* Logo */}
         <div className="flex items-center gap-3">
           <img
@@ -50,29 +50,35 @@ const Navbar = () => {
 
         {/* Menu */}
         <div className="flex gap-8 text-gray-700 font-medium">
-          <a href="#" className="hover:text-orange-500 transition">Menu</a>
-         <NavLink
- to="/offers"
- className="hover:text-orange-500 transition"
->
- Offers
-</NavLink>
+          
           <NavLink
- to="/catering"
- className="hover:text-orange-500"
->
- Catering
-</NavLink>
-         <NavLink to="/about" 
-  className="hover:text-orange-500 transition">
-  About
-</NavLink>
-          <a href="#" className="hover:text-orange-500 transition">Contact</a>
+            to="/Menu"
+            className="hover:text-orange-500 transition"
+          >
+            Menu
+          </NavLink>
+          <NavLink
+            to="/offers"
+            className="hover:text-orange-500 transition"
+          >
+            Offers
+          </NavLink>
+          <NavLink
+            to="/catering"
+            className="hover:text-orange-500"
+          >
+            Catering
+          </NavLink>
+          <NavLink to="/about"
+            className="hover:text-orange-500 transition">
+            About
+          </NavLink>
+          <NavLink to="/contact">Contact</NavLink>
         </div>
 
         {/* Right Side */}
         <div className="flex items-center gap-4 relative" ref={dropdownRef}>
-          
+
           <button className="bg-orange-500 text-white px-5 py-2 rounded-xl hover:bg-orange-600 transition">
             Order Now
           </button>

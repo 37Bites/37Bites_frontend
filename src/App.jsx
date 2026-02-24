@@ -7,6 +7,8 @@ import AdminHome from "./pages/AdminDashboard/AdminHome";
 import About from "./pages/navbar/About";
 import Offers from "./pages/navbar/offers";
 import Catering from "./pages/navbar/Catering";
+import Contact from "./pages/navbar/Contact";
+import Menu from "./pages/navbar/Menu";
 function App() {
   return (
     <BrowserRouter>
@@ -19,6 +21,9 @@ function App() {
           <Route path="/about" element={<About/>}/>
           <Route path="/offers" element={<Offers/>} />
           <Route path="/catering" element={<Catering/>}/>
+          <Route path="/Contact" element={<Contact/>}/>
+          <Route path="/Menu" element={<Menu/>}/>
+
            </Route>
 
            {/* Admin routing */}
