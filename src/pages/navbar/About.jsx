@@ -15,7 +15,7 @@ const About = () => {
           <p className="text-lg md:text-xl">
             Fast & Reliable Food Delivery in Saint Martin Island 🌴
           </p>
-
+        <button className="btn-secondary">login</button>
         </div>
       </div>
 
@@ -28,7 +28,7 @@ const About = () => {
           {/* LEFT */}
           <div>
 
-            <h2 className="text-3xl font-bold mb-4">
+            <h2 className="heading-lg">
               Who We Are
             </h2>
 
@@ -68,7 +68,7 @@ const About = () => {
 
 
           {/* Mission */}
-          <div className="bg-gray-50 p-8 rounded-2xl shadow">
+          <div className="card">
 
             <h3 className="text-2xl font-bold mb-3">
               🎯 Our Mission

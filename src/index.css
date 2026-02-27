@@ -1,7 +1,28 @@
-
 @import "tailwindcss";
 
-/* Hide scrollbar */
+/* =========================
+   🎨 THEME VARIABLES
+========================= */
+:root {
+  --color-primary: 0 119 182;      /* Ocean Blue */
+  --color-secondary: 249 115 22;   /* Sunset Orange */
+  --color-background: 249 115 22;
+  --color-text: 15 23 42;
+
+  --radius: 12px;
+  --transition: all 0.3s ease;
+}
+
+/* =========================
+   🌍 GLOBAL STYLES
+========================= */
+body {
+  background-color: rgb(var(--color-background));
+  color: rgb(var(--color-text));
+  font-family: system-ui, sans-serif;
+}
+
+/* Hide Scrollbar */
 .no-scrollbar::-webkit-scrollbar {
   display: none;
 }
@@ -10,13 +31,70 @@
   scrollbar-width: none;
 }
 
+/* =========================
+   🧩 CUSTOM COMPONENTS
+========================= */
 
+@layer components {
 
+  /* 🔵 Primary Button */
+  .btn-primary {
+    @apply px-6 py-3 text-white font-semibold rounded-xl shadow-md;
+    background-color: rgb(var(--color-primary));
+    transition: var(--transition);
+  }
 
+  .btn-primary:hover {
+    background-color: rgb(0 95 150);
+    @apply shadow-lg scale-105;
+  }
 
-:root {
-  --color-primary: 0 119 182;      /* Ocean Blue */
-  --color-secondary: 249 115 22;   /* Sunset Orange */
-  --color-background: 241 250 252;
-  --color-text: 15 23 42;
+  /* 🟠 Secondary Button */
+  .btn-secondary {
+    @apply px-6 py-3 text-white font-semibold rounded-xl shadow-md;
+    background-color: rgb(var(--color-secondary));
+    transition: var(--transition);
+  }
+
+  .btn-secondary:hover {
+    background-color: rgb(220 90 10);
+    @apply shadow-lg scale-105;
+  }
+
+  /* ✨ Outline Button */
+  .btn-outline {
+    @apply px-6 py-3 font-semibold rounded-xl border-2;
+    border-color: rgb(var(--color-primary));
+    color: rgb(var(--color-primary));
+    transition: var(--transition);
+  }
+
+  .btn-outline:hover {
+    background-color: rgb(var(--color-primary));
+    color: white;
+  }
+
+  /* 🏷 Heading Styles */
+  .heading-xl {
+    @apply text-4xl md:text-5xl font-bold tracking-tight;
+  }
+
+  .heading-lg {
+    @apply text-3xl md:text-4xl font-semibold;
+  }
+
+  .heading-md {
+    @apply text-2xl font-semibold;
+  }
+
+  /* 📄 Paragraph */
+  .paragraph {
+    @apply text-base md:text-lg leading-relaxed text-gray-600;
+  }
+
+  /* 📦 Card */
+  .card {
+    @apply bg-white p-6 rounded-2xl shadow-md hover:shadow-xl transition-all duration-300;
+  }
+
 }
