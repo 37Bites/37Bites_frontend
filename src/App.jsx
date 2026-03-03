@@ -10,6 +10,7 @@ import Catering from "./pages/navbar/Catering";
 import Contact from "./pages/navbar/Contact";
 import Menu from "./pages/navbar/Menu";
 import AdminLogin from "./pages/AdminLogin";
+import RestautrantLogin from "./pages/navbar/RestaurantLogin";
 function App() {
   return (
     <BrowserRouter>
@@ -25,6 +26,7 @@ function App() {
           <Route path="/Contact" element={<Contact/>}/>
           <Route path="/Menu" element={<Menu/>}/>
           <Route path="/login" element={<AdminLogin/>}/>
+          <Route path="/resturant-login" element={<RestautrantLogin/>} />
        
 
            </Route>

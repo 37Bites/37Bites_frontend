@@ -74,6 +74,12 @@ const Navbar = () => {
             About
           </NavLink>
           <NavLink to="/contact">Contact</NavLink>
+
+          <NavLink to="/resturant-login"
+            className="hover:text-orange-500 transition">
+            Partner with us
+          </NavLink>
+          
         </div>
 
         {/* Right Side */}

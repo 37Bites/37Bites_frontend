@@ -7,7 +7,6 @@ const LoginModal = ({ closeModal }) => {
   const dispatch = useDispatch();
 
   const [mobile, setMobile] = useState("");
-  const [role, setRole] = useState("user");
   const [otp, setOtp] = useState("");
   const [step, setStep] = useState("login");
   const [loading, setLoading] = useState(false);
@@ -19,22 +18,8 @@ const LoginModal = ({ closeModal }) => {
     try {
       const res = await api.post("/auth/login", {
         mobile: mobile.trim(),
-        role,
       });
 
-      // ✅ Direct login
-      if (res.data.user) {
-        dispatch(
-          loginSuccess({
-            user: res.data.user,
-            accessToken: null, // cookie based auth
-          })
-        );
-        closeModal();
-        return;
-      }
-
-      // ✅ OTP required
       if (res.data.requiresOtp) {
         setStep("otp");
       }
@@ -83,22 +68,13 @@ const LoginModal = ({ closeModal }) => {
         {step === "login" ? (
           <>
             <h2 className="text-2xl font-bold mb-6 text-center">
-              Login
+              Login with Mobile
             </h2>
 
             <form onSubmit={handleLogin}>
-              <select
-                className="w-full mb-4 p-2 border rounded"
-                value={role}
-                onChange={(e) => setRole(e.target.value)}
-              >
-                <option value="user">User</option>
-                <option value="restaurant">Restaurant</option>
-              </select>
-
               <input
                 type="text"
-                placeholder="Enter Mobile"
+                placeholder="Enter Mobile Number"
                 className="w-full mb-4 p-2 border rounded"
                 value={mobile}
                 onChange={(e) => setMobile(e.target.value)}
@@ -110,7 +86,7 @@ const LoginModal = ({ closeModal }) => {
                 disabled={loading}
                 className="w-full bg-orange-500 text-white py-2 rounded-xl"
               >
-                {loading ? "Please wait..." : "Continue"}
+                {loading ? "Sending OTP..." : "Continue"}
               </button>
             </form>
           </>
