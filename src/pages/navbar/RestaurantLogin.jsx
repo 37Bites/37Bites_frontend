@@ -1,19 +1,54 @@
 import { useState, useRef } from "react";
+import api from "../../api/axios";
+import { useDispatch } from "react-redux";
+import { loginSuccess } from "../../features/auth/authSlice";
+import { useNavigate } from "react-router-dom";
 
 export default function RestautrantLogin() {
   const [mobile, setMobile] = useState("");
   const [step, setStep] = useState(1);
   const [otp, setOtp] = useState(new Array(6).fill(""));
-  const inputsRef = useRef([]);
+  const [loading, setLoading] = useState(false);
 
-  const handleSendOtp = () => {
+  const inputsRef = useRef([]);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  // Send OTP
+  const handleSendOtp = async () => {
     if (mobile.length < 10) {
       alert("Enter valid mobile number");
       return;
     }
-    setStep(2);
+
+    setLoading(true);
+
+    try {
+      const res = await api.post("/auth/login", {
+        mobile: mobile.trim(),
+        role: "restaurant",
+      });
+
+      // If already verified → direct login
+      if (res.data.user) {
+        dispatch(loginSuccess({ user: res.data.user }));
+        navigate("/partner-dashboard");
+        return;
+      }
+
+      // OTP required
+      if (res.data.requiresOtp) {
+        setStep(2);
+      }
+
+    } catch (err) {
+      alert(err.response?.data?.message || "Login failed");
+    } finally {
+      setLoading(false);
+    }
   };
 
+  // OTP Input Change
   const handleChange = (element, index) => {
     if (!/^[0-9]?$/.test(element.value)) return;
 
@@ -21,7 +56,6 @@ export default function RestautrantLogin() {
     newOtp[index] = element.value;
     setOtp(newOtp);
 
-    // Move to next input
     if (element.value && index < 5) {
       inputsRef.current[index + 1].focus();
     }
@@ -33,21 +67,42 @@ export default function RestautrantLogin() {
     }
   };
 
-  const handleVerify = () => {
+  // Verify OTP
+  const handleVerify = async () => {
     const finalOtp = otp.join("");
+
     if (finalOtp.length !== 6) {
       alert("Enter complete 6 digit OTP");
       return;
     }
 
-    alert("OTP Verified ✅");
+    setLoading(true);
+
+    try {
+      const res = await api.post("/auth/verify-otp", {
+        mobile,
+        otp: finalOtp,
+        role: "restaurant",
+      });
+
+      const { user } = res.data;
+
+      dispatch(loginSuccess({ user }));
+
+      navigate("/partner-dashboard");
+
+    } catch (err) {
+      alert(err.response?.data?.message || "Invalid OTP");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
     <div className="w-full min-h-screen flex items-center justify-center relative">
       
       {/* Background */}
-      <div 
+      <div
         className="absolute inset-0 bg-cover bg-center"
         style={{
           backgroundImage:
@@ -100,7 +155,7 @@ export default function RestautrantLogin() {
                 onClick={handleSendOtp}
                 className="w-full bg-orange-500 text-white py-3 rounded-lg hover:bg-orange-600 transition"
               >
-                Continue
+                {loading ? "Sending OTP..." : "Continue"}
               </button>
             </>
           )}
@@ -134,7 +189,7 @@ export default function RestautrantLogin() {
                 onClick={handleVerify}
                 className="w-full bg-orange-500 text-white py-3 rounded-lg hover:bg-orange-600 transition"
               >
-                Verify & Submit
+                {loading ? "Verifying..." : "Verify & Submit"}
               </button>
 
               <button

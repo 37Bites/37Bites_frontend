@@ -14,25 +14,44 @@ const LoginModal = ({ closeModal }) => {
   const [loading, setLoading] = useState(false);
 
   // ✅ Send OTP
-  const handleLogin = async (e) => {
-    e.preventDefault();
-    setLoading(true);
+ const handleLogin = async (e) => {
+  e.preventDefault();
+  setLoading(true);
 
-    try {
-      const res = await api.post("/auth/login", {
-        mobile: mobile.trim(),
-      });
+  try {
+    const res = await api.post("/auth/login", {
+      mobile: mobile.trim(),
+      role: "user",
+    });
 
-      if (res.data.requiresOtp) {
-        setStep("otp");
-      }
-    } catch (err) {
-      alert(err.response?.data?.message || "Login failed");
-    } finally {
-      setLoading(false);
+    // ✅ Case 1: OTP Required
+    if (res.data.requiresOtp) {
+      setStep("otp");
+      return;
     }
-  };
 
+    // ✅ Case 2: Already Verified → Direct Login
+    if (res.data.user) {
+      const { user } = res.data;
+
+      dispatch(
+        loginSuccess({
+          user,
+        })
+      );
+
+      closeModal();
+
+      // Redirect
+      navigate("/");
+    }
+
+  } catch (err) {
+    alert(err.response?.data?.message || "Login failed");
+  } finally {
+    setLoading(false);
+  }
+};
   // ✅ Verify OTP + Auto Role Handling
   const handleVerifyOtp = async (e) => {
     e.preventDefault();
@@ -42,6 +61,7 @@ const LoginModal = ({ closeModal }) => {
       const res = await api.post("/auth/verify-otp", {
         mobile,
         otp,
+        role: "user",   // ✅ auto role for customer website
       });
 
       const { user, accessToken } = res.data;
