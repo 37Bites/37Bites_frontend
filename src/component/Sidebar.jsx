@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { NavLink } from "react-router-dom";
+import React, { useEffect, useMemo, useState } from "react";
+import { NavLink, useLocation } from "react-router-dom";
 import {
   Menu,
   X,
@@ -33,9 +33,40 @@ import {
 export default function Sidebar() {
   const [open, setOpen] = useState(false);
   const [dropdown, setDropdown] = useState(null);
+  const location = useLocation();
+
+  const BASE = "/ResaurantDashboard";
+
+  const menuPaths = useMemo(
+    () => [
+      `${BASE}/menu/all-items`,
+      `${BASE}/menu/add-item`,
+      `${BASE}/menu/premium-items`,
+      `${BASE}/menu/combo-items`,
+    ],
+    []
+  );
+
+  const deliveryPaths = useMemo(
+    () => [
+      `${BASE}/delivery/riders`,
+      `${BASE}/delivery/live-tracking`,
+      `${BASE}/delivery/zones`,
+      `${BASE}/delivery/charges`,
+    ],
+    []
+  );
+
+  useEffect(() => {
+    if (menuPaths.includes(location.pathname)) {
+      setDropdown("menu");
+    } else if (deliveryPaths.includes(location.pathname)) {
+      setDropdown("delivery");
+    }
+  }, [location.pathname, menuPaths, deliveryPaths]);
 
   const toggle = (name) => {
-    setDropdown(dropdown === name ? null : name);
+    setDropdown((prev) => (prev === name ? null : name));
   };
 
   const closeSidebar = () => {
@@ -56,12 +87,22 @@ export default function Sidebar() {
         : "text-orange-100 hover:text-white hover:bg-orange-500/30"
     }`;
 
+  const dropdownButtonClass = (isActiveGroup) =>
+    `flex items-center justify-between w-full px-4 py-3 rounded-xl transition-all duration-200 ${
+      isActiveGroup
+        ? "bg-orange-500/50 text-white"
+        : "hover:bg-orange-500/70 text-white"
+    }`;
+
+  const isMenuActive = menuPaths.includes(location.pathname);
+  const isDeliveryActive = deliveryPaths.includes(location.pathname);
+
   return (
     <>
       {/* Mobile Toggle Button */}
       <button
-        onClick={() => setOpen(!open)}
-        className="lg:hidden fixed top-4 left-4 z-[60] bg-orange-500 text-white p-2.5 rounded-xl shadow-lg"
+        onClick={() => setOpen((prev) => !prev)}
+        className="fixed left-4 top-4 z-[60] rounded-xl bg-orange-500 p-2.5 text-white shadow-lg lg:hidden"
       >
         {open ? <X size={20} /> : <Menu size={20} />}
       </button>
@@ -69,36 +110,37 @@ export default function Sidebar() {
       {/* Overlay */}
       {open && (
         <div
-          className="lg:hidden fixed inset-0 bg-black/40 backdrop-blur-[1px] z-40"
+          className="fixed inset-0 z-40 bg-black/40 backdrop-blur-[1px] lg:hidden"
           onClick={closeSidebar}
         />
       )}
 
       {/* Sidebar */}
       <aside
-        className={`fixed top-0 left-0 z-50 h-screen w-[280px] sm:w-72 overflow-hidden bg-gradient-to-b from-orange-500 via-orange-600 to-orange-700 text-white shadow-2xl transform transition-transform duration-300
-        ${open ? "translate-x-0" : "-translate-x-full"}
-        lg:translate-x-0`}
+        className={`fixed left-0 top-0 z-50 h-screen w-[280px] transform overflow-hidden bg-gradient-to-b from-orange-500 via-orange-600 to-orange-700 text-white shadow-2xl transition-transform duration-300 sm:w-72 ${
+          open ? "translate-x-0" : "-translate-x-full"
+        } lg:translate-x-0`}
       >
         {/* Logo / Header */}
-        <div className="px-5 sm:px-6 py-5 border-b border-orange-400/60 bg-white/5 backdrop-blur-sm">
-          <h1 className="text-xl sm:text-2xl font-extrabold tracking-wide">
+        <div className="border-b border-orange-400/60 bg-white/5 px-5 py-5 backdrop-blur-sm sm:px-6">
+          <h1 className="text-xl font-extrabold tracking-wide sm:text-2xl">
             37BITES
           </h1>
-          <p className="text-xs text-orange-100 mt-1">Restaurant Admin Panel</p>
+          <p className="mt-1 text-xs text-orange-100">Restaurant Admin Panel</p>
         </div>
 
         {/* Scroll Content */}
-        <div className="h-[calc(100vh-88px)] overflow-y-auto no-scrollbar px-3 sm:px-4 py-4 space-y-6">
+        <div className="no-scrollbar h-[calc(100vh-88px)] space-y-6 overflow-y-auto px-3 py-4 sm:px-4">
           {/* MAIN */}
           <div>
-            <h2 className="text-xs uppercase text-orange-200 mb-3 font-semibold tracking-wider px-1">
+            <h2 className="mb-3 px-1 text-xs font-semibold uppercase tracking-wider text-orange-200">
               Main
             </h2>
 
             <div className="space-y-2">
               <NavLink
-                to="/ResaurantDashboard"
+                to={BASE}
+                end
                 className={linkClass}
                 onClick={closeSidebar}
               >
@@ -106,7 +148,7 @@ export default function Sidebar() {
               </NavLink>
 
               <NavLink
-                to="/ResaurantDashboard/orders"
+                to={`${BASE}/orders`}
                 className={linkClass}
                 onClick={closeSidebar}
               >
@@ -114,7 +156,7 @@ export default function Sidebar() {
               </NavLink>
 
               <NavLink
-                to="/ResaurantDashboard/live-orders"
+                to={`${BASE}/live-orders`}
                 className={linkClass}
                 onClick={closeSidebar}
               >
@@ -122,7 +164,7 @@ export default function Sidebar() {
               </NavLink>
 
               <NavLink
-                to="/ResaurantDashboard/customers"
+                to={`${BASE}/customers`}
                 className={linkClass}
                 onClick={closeSidebar}
               >
@@ -130,7 +172,7 @@ export default function Sidebar() {
               </NavLink>
 
               <NavLink
-                to="/ResaurantDashboard/reviews"
+                to={`${BASE}/reviews`}
                 className={linkClass}
                 onClick={closeSidebar}
               >
@@ -138,7 +180,7 @@ export default function Sidebar() {
               </NavLink>
 
               <NavLink
-                to="/ResaurantDashboard/bookings"
+                to={`${BASE}/bookings`}
                 className={linkClass}
                 onClick={closeSidebar}
               >
@@ -149,14 +191,14 @@ export default function Sidebar() {
 
           {/* MENU MANAGEMENT */}
           <div>
-            <h2 className="text-xs uppercase text-orange-200 mb-3 font-semibold tracking-wider px-1">
+            <h2 className="mb-3 px-1 text-xs font-semibold uppercase tracking-wider text-orange-200">
               Menu Management
             </h2>
 
             <div className="space-y-2">
               <button
                 onClick={() => toggle("menu")}
-                className="flex items-center justify-between w-full px-4 py-3 rounded-xl hover:bg-orange-500/70 transition-all duration-200"
+                className={dropdownButtonClass(isMenuActive)}
               >
                 <span className="flex items-center gap-3 text-sm">
                   <UtensilsCrossed size={18} /> Menu
@@ -169,30 +211,30 @@ export default function Sidebar() {
               </button>
 
               {dropdown === "menu" && (
-                <div className="space-y-1 mt-1">
+                <div className="mt-1 space-y-1">
                   <NavLink
-                    to="/ResaurantDashboard/menu/all-items"
+                    to={`${BASE}/menu/all-items`}
                     className={subLinkClass}
                     onClick={closeSidebar}
                   >
                     • All Items
                   </NavLink>
                   <NavLink
-                    to="/ResaurantDashboard/menu/add-item"
+                    to={`${BASE}/menu/add-item`}
                     className={subLinkClass}
                     onClick={closeSidebar}
                   >
                     • Add Item
                   </NavLink>
                   <NavLink
-                    to="/ResaurantDashboard/menu/premium-items"
+                    to={`${BASE}/menu/premium-items`}
                     className={subLinkClass}
                     onClick={closeSidebar}
                   >
                     • Premium Items
                   </NavLink>
                   <NavLink
-                    to="/ResaurantDashboard/menu/combo-items"
+                    to={`${BASE}/menu/combo-items`}
                     className={subLinkClass}
                     onClick={closeSidebar}
                   >
@@ -202,7 +244,7 @@ export default function Sidebar() {
               )}
 
               <NavLink
-                to="/ResaurantDashboard/categories"
+                to={`${BASE}/categories`}
                 className={linkClass}
                 onClick={closeSidebar}
               >
@@ -210,7 +252,7 @@ export default function Sidebar() {
               </NavLink>
 
               <NavLink
-                to="/ResaurantDashboard/addons"
+                to={`${BASE}/addons`}
                 className={linkClass}
                 onClick={closeSidebar}
               >
@@ -218,7 +260,7 @@ export default function Sidebar() {
               </NavLink>
 
               <NavLink
-                to="/ResaurantDashboard/offers"
+                to={`${BASE}/offers`}
                 className={linkClass}
                 onClick={closeSidebar}
               >
@@ -226,7 +268,7 @@ export default function Sidebar() {
               </NavLink>
 
               <NavLink
-                to="/ResaurantDashboard/inventory"
+                to={`${BASE}/inventory`}
                 className={linkClass}
                 onClick={closeSidebar}
               >
@@ -234,7 +276,7 @@ export default function Sidebar() {
               </NavLink>
 
               <NavLink
-                to="/ResaurantDashboard/kitchen-display"
+                to={`${BASE}/kitchen-display`}
                 className={linkClass}
                 onClick={closeSidebar}
               >
@@ -245,14 +287,14 @@ export default function Sidebar() {
 
           {/* DELIVERY */}
           <div>
-            <h2 className="text-xs uppercase text-orange-200 mb-3 font-semibold tracking-wider px-1">
+            <h2 className="mb-3 px-1 text-xs font-semibold uppercase tracking-wider text-orange-200">
               Delivery
             </h2>
 
             <div className="space-y-2">
               <button
                 onClick={() => toggle("delivery")}
-                className="flex items-center justify-between w-full px-4 py-3 rounded-xl hover:bg-orange-500/70 transition-all duration-200"
+                className={dropdownButtonClass(isDeliveryActive)}
               >
                 <span className="flex items-center gap-3 text-sm">
                   <Bike size={18} /> Delivery Management
@@ -265,30 +307,30 @@ export default function Sidebar() {
               </button>
 
               {dropdown === "delivery" && (
-                <div className="space-y-1 mt-1">
+                <div className="mt-1 space-y-1">
                   <NavLink
-                    to="/ResaurantDashboard/delivery/riders"
+                    to={`${BASE}/delivery/riders`}
                     className={subLinkClass}
                     onClick={closeSidebar}
                   >
                     • Riders
                   </NavLink>
                   <NavLink
-                    to="/ResaurantDashboard/delivery/live-tracking"
+                    to={`${BASE}/delivery/live-tracking`}
                     className={subLinkClass}
                     onClick={closeSidebar}
                   >
                     • Live Tracking
                   </NavLink>
                   <NavLink
-                    to="/ResaurantDashboard/delivery/zones"
+                    to={`${BASE}/delivery/zones`}
                     className={subLinkClass}
                     onClick={closeSidebar}
                   >
                     • Delivery Zones
                   </NavLink>
                   <NavLink
-                    to="/ResaurantDashboard/delivery/charges"
+                    to={`${BASE}/delivery/charges`}
                     className={subLinkClass}
                     onClick={closeSidebar}
                   >
@@ -301,13 +343,13 @@ export default function Sidebar() {
 
           {/* BUSINESS */}
           <div>
-            <h2 className="text-xs uppercase text-orange-200 mb-3 font-semibold tracking-wider px-1">
+            <h2 className="mb-3 px-1 text-xs font-semibold uppercase tracking-wider text-orange-200">
               Business
             </h2>
 
             <div className="space-y-2">
               <NavLink
-                to="/ResaurantDashboard/analytics"
+                to={`${BASE}/analytics`}
                 className={linkClass}
                 onClick={closeSidebar}
               >
@@ -315,7 +357,7 @@ export default function Sidebar() {
               </NavLink>
 
               <NavLink
-                to="/ResaurantDashboard/payments"
+                to={`${BASE}/payments`}
                 className={linkClass}
                 onClick={closeSidebar}
               >
@@ -323,7 +365,7 @@ export default function Sidebar() {
               </NavLink>
 
               <NavLink
-                to="/ResaurantDashboard/invoices"
+                to={`${BASE}/invoices`}
                 className={linkClass}
                 onClick={closeSidebar}
               >
@@ -331,7 +373,7 @@ export default function Sidebar() {
               </NavLink>
 
               <NavLink
-                to="/ResaurantDashboard/messages"
+                to={`${BASE}/messages`}
                 className={linkClass}
                 onClick={closeSidebar}
               >
@@ -342,13 +384,13 @@ export default function Sidebar() {
 
           {/* SETTINGS */}
           <div>
-            <h2 className="text-xs uppercase text-orange-200 mb-3 font-semibold tracking-wider px-1">
+            <h2 className="mb-3 px-1 text-xs font-semibold uppercase tracking-wider text-orange-200">
               Restaurant Settings
             </h2>
 
             <div className="space-y-2">
               <NavLink
-                to="/ResaurantDashboard/restaurant-profile"
+                to={`${BASE}/restaurant-profile`}
                 className={linkClass}
                 onClick={closeSidebar}
               >
@@ -356,7 +398,7 @@ export default function Sidebar() {
               </NavLink>
 
               <NavLink
-                to="/ResaurantDashboard/staff-roles"
+                to={`${BASE}/staff-roles`}
                 className={linkClass}
                 onClick={closeSidebar}
               >
@@ -364,7 +406,7 @@ export default function Sidebar() {
               </NavLink>
 
               <NavLink
-                to="/ResaurantDashboard/notifications"
+                to={`${BASE}/notifications`}
                 className={linkClass}
                 onClick={closeSidebar}
               >
@@ -372,7 +414,7 @@ export default function Sidebar() {
               </NavLink>
 
               <NavLink
-                to="/ResaurantDashboard/settings"
+                to={`${BASE}/settings`}
                 className={linkClass}
                 onClick={closeSidebar}
               >
@@ -383,13 +425,13 @@ export default function Sidebar() {
 
           {/* EXTRA */}
           <div>
-            <h2 className="text-xs uppercase text-orange-200 mb-3 font-semibold tracking-wider px-1">
+            <h2 className="mb-3 px-1 text-xs font-semibold uppercase tracking-wider text-orange-200">
               Extra
             </h2>
 
             <div className="space-y-2">
               <NavLink
-                to="/ResaurantDashboard/tools"
+                to={`${BASE}/tools`}
                 className={linkClass}
                 onClick={closeSidebar}
               >
@@ -397,7 +439,7 @@ export default function Sidebar() {
               </NavLink>
 
               <NavLink
-                to="/ResaurantDashboard/support"
+                to={`${BASE}/support`}
                 className={linkClass}
                 onClick={closeSidebar}
               >
