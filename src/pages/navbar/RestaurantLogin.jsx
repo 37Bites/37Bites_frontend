@@ -40,6 +40,7 @@ export default function RestautrantLogin() {
     }
   };
 
+  // OTP Input Change
   const handleChange = (element, index) => {
     if (!/^[0-9]?$/.test(element.value)) return;
 
