@@ -32,7 +32,7 @@ export default function RestautrantLogin() {
       // If already verified → direct login
       if (res.data.user) {
         dispatch(loginSuccess({ user: res.data.user }));
-        navigate("/partner-dashboard");
+        navigate("/ResaurantDashboard");
         return;
       }
 
