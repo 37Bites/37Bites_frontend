@@ -1,21 +1,41 @@
 @import "tailwindcss";
 
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
 /* =========================
    🎨 THEME VARIABLES
 ========================= */
 :root {
-  --color-primary: 0 119 182;      /* Ocean Blue */
-  --color-secondary: 249 115 22;   /* Sunset Orange */
-  --color-background: 249 115 22;
-  --color-text: 15 23 42;
 
-  --radius: 12px;
-  --transition: all 0.3s ease;
+  /* Brand Colors */
+  --color-primary: 249 115 22;      /* Premium Orange */
+  --color-primary-dark: 234 88 12;
+
+  --color-secondary: 30 41 59;      /* Dark Slate */
+  --color-accent: 16 185 129;       /* Emerald Accent */
+
+  /* UI Colors */
+  --color-background: 248 250 252;  /* Light Gray */
+  --color-card: 255 255 255;
+
+  --color-text: 15 23 42;
+  --color-muted: 100 116 139;
+
+  --radius: 14px;
+  --transition: all 0.25s ease;
 }
 
 /* =========================
    🌍 GLOBAL STYLES
 ========================= */
+
 body {
   background-color: rgb(var(--color-background));
   color: rgb(var(--color-text));
@@ -26,18 +46,19 @@ body {
 .no-scrollbar::-webkit-scrollbar {
   display: none;
 }
+
 .no-scrollbar {
   -ms-overflow-style: none;
   scrollbar-width: none;
 }
 
 /* =========================
-   🧩 CUSTOM COMPONENTS
+   🧩 COMPONENTS
 ========================= */
 
 @layer components {
 
-  /* 🔵 Primary Button */
+  /* 🔥 Primary Button */
   .btn-primary {
     @apply px-6 py-3 text-white font-semibold rounded-xl shadow-md;
     background-color: rgb(var(--color-primary));
@@ -45,11 +66,11 @@ body {
   }
 
   .btn-primary:hover {
-    background-color: rgb(0 95 150);
+    background-color: rgb(var(--color-primary-dark));
     @apply shadow-lg scale-105;
   }
 
-  /* 🟠 Secondary Button */
+  /* 🌑 Secondary Button */
   .btn-secondary {
     @apply px-6 py-3 text-white font-semibold rounded-xl shadow-md;
     background-color: rgb(var(--color-secondary));
@@ -57,7 +78,7 @@ body {
   }
 
   .btn-secondary:hover {
-    background-color: rgb(220 90 10);
+    background-color: rgb(15 23 42);
     @apply shadow-lg scale-105;
   }
 
@@ -74,7 +95,8 @@ body {
     color: white;
   }
 
-  /* 🏷 Heading Styles */
+  /* 🏷 Headings */
+
   .heading-xl {
     @apply text-4xl md:text-5xl font-bold tracking-tight;
   }
@@ -88,13 +110,23 @@ body {
   }
 
   /* 📄 Paragraph */
+
   .paragraph {
-    @apply text-base md:text-lg leading-relaxed text-gray-600;
+    @apply text-base md:text-lg leading-relaxed;
+    color: rgb(var(--color-muted));
   }
 
   /* 📦 Card */
+
   .card {
-    @apply bg-white p-6 rounded-2xl shadow-md hover:shadow-xl transition-all duration-300;
+    background-color: rgb(var(--color-card));
+    @apply p-6 rounded-2xl shadow-sm hover:shadow-lg transition-all duration-300;
+  }
+
+  /* 📊 Dashboard Card */
+
+  .dashboard-card {
+    @apply p-5 rounded-xl bg-white shadow-sm border border-gray-100 hover:shadow-md transition;
   }
 
 }

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { motion } from "framer-motion";
-import RestaurantSlider from "../component/RestaurantSlider"
+// import RestaurantSlider from "../component/RestaurantSlider";
 import HeroOfferSlider from "../component/HeroOfferSlider";
 
 const categories = [
@@ -20,15 +20,12 @@ const categories = [
 const menuItems = [
   { name: "Chicken Biryani", price: "$13.99", img: "https://images.unsplash.com/photo-1604908176997-125f25cc6f3d" },
   { name: "Shrimp Biryani", price: "$16.99", img: "https://images.unsplash.com/photo-1628294895950-9805252327bc" },
-
   { name: "Vegetable Biryani", price: "$10.99", img: "https://images.unsplash.com/photo-1589302168068-964664d93dc0" },
   { name: "Veg Fried Rice", price: "$13.99", img: "https://images.unsplash.com/photo-1603133872878-684f208fb84b" },
   { name: "Veg Noodles", price: "$16.99", img: "https://images.unsplash.com/photo-1617191519105-d07b98b10de6" },
   { name: "Butter Chicken", price: "$15.99", img: "https://images.unsplash.com/photo-1603894584373-5ac82b2ae398" },
-
   { name: "Masala Dosa", price: "$12.99", img: "https://images.unsplash.com/photo-1631515243349-e0cb75fb8d3a" },
   { name: "Sada Dosa", price: "$10.99", img: "https://images.unsplash.com/photo-1631452180519-c014fe946bc7" },
- 
 ];
 
 export default function Home() {
@@ -45,47 +42,40 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-gray-100">
+      <HeroOfferSlider />
 
-<HeroOfferSlider/>
-   
+      {/* Category Section */}
+      <div className="sticky top-[80px] z-40 bg-gray-100 shadow-sm overflow-hidden">
+        <div className="flex justify-center">
+          <div className="flex overflow-x-auto no-scrollbar px-6 md:px-12 py-4 gap-10 md:gap-12 whitespace-nowrap items-center w-full max-w-[1400px] min-h-[90px]">
+            {categories.map((cat, index) => (
+              <div
+                key={index}
+                className="flex flex-col items-center min-w-fit cursor-pointer"
+              >
+                <div
+                  className={`transition-all duration-300 ${
+                    scrolled ? "h-0 opacity-0 mb-0" : "h-16 opacity-100 mb-2"
+                  }`}
+                >
+                  <img
+                    src={cat.img}
+                    alt={cat.name}
+                    className="h-16 w-16 object-contain"
+                  />
+                </div>
 
- {/* Category Section */}
-<div className="sticky top-/[80px] z-40 bg-gray-100 shadow-sm overflow-hidden">
-
-  <div className="flex justify-center">
-
-    <div className="flex overflow-x-auto no-scrollbar px-6 md:px-12 py-4 gap-10 md:gap-12 whitespace-nowrap items-center w-full max-w-[1400px] min-h-[90px]">
-
-      {categories.map((cat, index) => (
-        <div
-          key={index}
-          className="flex flex-col items-center min-w-fit cursor-pointer"
-        >
-          <div
-            className={`transition-all duration-300 ${
-              scrolled
-                ? "h-0 opacity-0 mb-0"
-                : "h-16 opacity-100 mb-2"
-            }`}
-          >
-            <img
-              src={cat.img}
-              alt={cat.name}
-              className="h-16 w-16 object-contain"
-            />
+                <p className="text-sm md:text-base font-medium text-gray-700 text-center">
+                  {cat.name}
+                </p>
+              </div>
+            ))}
           </div>
-
-          <p className="text-sm md:text-base font-medium text-gray-700 text-center">
-            {cat.name}
-          </p>
         </div>
-      ))}
+      </div>
 
-    </div>
+      {/* <RestaurantSlider /> */}
 
-  </div>
-</div>
-<RestaurantSlider/>
       {/* Hero Section */}
       <div
         className="h-72 bg-cover bg-center flex items-center justify-center"
@@ -99,9 +89,8 @@ export default function Home() {
         </h2>
       </div>
 
-
       {/* Category Buttons */}
-      <div className="flex justify-center gap-4 mt-10">
+      <div className="flex justify-center gap-4 mt-10 flex-wrap px-4">
         {["Starter", "Sides", "Main Course", "Dessert", "Beverages"].map((cat) => (
           <button
             key={cat}
@@ -125,6 +114,7 @@ export default function Home() {
               alt={item.name}
               className="h-40 w-full object-cover"
             />
+
             <div className="p-4 text-center">
               <h3 className="font-bold text-lg">{item.name}</h3>
               <button className="mt-4 bg-orange-500 text-white px-4 py-2 rounded-xl hover:bg-orange-600">
@@ -134,9 +124,6 @@ export default function Home() {
           </motion.div>
         ))}
       </div>
-
-
-
     </div>
   );
 }

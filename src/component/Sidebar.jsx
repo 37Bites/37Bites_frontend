@@ -7,27 +7,27 @@ import {
   ChevronRight,
   LayoutDashboard,
   ClipboardList,
-  Store,
-  Calculator,
-  Users,
-  BarChart3,
-  Map,
-  MessageCircle,
-  User,
-  Shield,
-  Layers,
-  FileText,
+  UtensilsCrossed,
+  Grid2x2,
   Package,
-  Sliders,
   Percent,
+  Star,
+  Users,
+  Bike,
+  BarChart3,
+  Store,
   CreditCard,
-  Truck,
   UserCog,
-  Database,
-  Megaphone,
-  Ticket,
-  Gift,
-  Wrench
+  Bell,
+  Settings,
+  Wrench,
+  MessageCircle,
+  Radio,
+  Receipt,
+  Warehouse,
+  ChefHat,
+  HelpCircle,
+  CalendarDays,
 } from "lucide-react";
 
 export default function Sidebar() {
@@ -38,303 +38,375 @@ export default function Sidebar() {
     setDropdown(dropdown === name ? null : name);
   };
 
+  const closeSidebar = () => {
+    setOpen(false);
+  };
+
   const linkClass = ({ isActive }) =>
-    `flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm transition
-    ${
+    `flex items-center gap-3 px-4 py-3 rounded-xl text-sm transition-all duration-200 ${
       isActive
-        ? "bg-white text-orange-600 font-semibold"
-        : "text-white hover:bg-orange-600/80"
+        ? "bg-white text-orange-600 font-semibold shadow-md"
+        : "text-white hover:bg-orange-500/70"
     }`;
 
   const subLinkClass = ({ isActive }) =>
-    `block pl-10 py-1.5 text-sm transition
-    ${
+    `block pl-11 pr-4 py-2 text-sm rounded-lg transition-all duration-200 ${
       isActive
-        ? "text-white font-medium"
-        : "text-orange-100 hover:text-white"
+        ? "text-white font-semibold bg-orange-500/40"
+        : "text-orange-100 hover:text-white hover:bg-orange-500/30"
     }`;
 
   return (
     <>
-      {/* Mobile Toggle */}
+      {/* Mobile Toggle Button */}
       <button
         onClick={() => setOpen(!open)}
-        className="lg:hidden fixed top-4 left-4 z-50 bg-orange-500 text-white p-2 rounded-md"
+        className="lg:hidden fixed top-4 left-4 z-[60] bg-orange-500 text-white p-2.5 rounded-xl shadow-lg"
       >
         {open ? <X size={20} /> : <Menu size={20} />}
       </button>
 
-      <div
-        className={`fixed top-0 left-0 w-72 h-screen bg-gradient-to-b
-        from-orange-500 via-orange-600 to-orange-700 text-white shadow-xl z-40
-        transform transition-transform duration-300
+      {/* Overlay */}
+      {open && (
+        <div
+          className="lg:hidden fixed inset-0 bg-black/40 backdrop-blur-[1px] z-40"
+          onClick={closeSidebar}
+        />
+      )}
+
+      {/* Sidebar */}
+      <aside
+        className={`fixed top-0 left-0 z-50 h-screen w-[280px] sm:w-72 overflow-hidden bg-gradient-to-b from-orange-500 via-orange-600 to-orange-700 text-white shadow-2xl transform transition-transform duration-300
         ${open ? "translate-x-0" : "-translate-x-full"}
         lg:translate-x-0`}
       >
-        <div className="px-6 py-5 border-b border-orange-400">
-          <h1 className="text-xl font-bold">37BITES</h1>
-          <p className="text-xs opacity-80">Restaurant Admin</p>
+        {/* Logo / Header */}
+        <div className="px-5 sm:px-6 py-5 border-b border-orange-400/60 bg-white/5 backdrop-blur-sm">
+          <h1 className="text-xl sm:text-2xl font-extrabold tracking-wide">
+            37BITES
+          </h1>
+          <p className="text-xs text-orange-100 mt-1">Restaurant Admin Panel</p>
         </div>
 
-        <div className="px-4 py-4 space-y-6 overflow-y-auto h-[calc(100vh-80px)]">
-
-          {/* ================= ORDERS ================= */}
+        {/* Scroll Content */}
+        <div className="h-[calc(100vh-88px)] overflow-y-auto no-scrollbar px-3 sm:px-4 py-4 space-y-6">
+          {/* MAIN */}
           <div>
-            <h2 className="text-xs uppercase text-orange-200 mb-3 font-semibold">
-              Orders
+            <h2 className="text-xs uppercase text-orange-200 mb-3 font-semibold tracking-wider px-1">
+              Main
             </h2>
 
-            <NavLink to="/dashboard" className={linkClass}>
-              <LayoutDashboard size={16} /> Dashboard
-            </NavLink>
+            <div className="space-y-2">
+              <NavLink
+                to="/ResaurantDashboard"
+                className={linkClass}
+                onClick={closeSidebar}
+              >
+                <LayoutDashboard size={18} /> Dashboard
+              </NavLink>
 
-            <NavLink to="/orders" className={linkClass}>
-              <ClipboardList size={16} /> Orders
-            </NavLink>
+              <NavLink
+                to="/ResaurantDashboard/orders"
+                className={linkClass}
+                onClick={closeSidebar}
+              >
+                <ClipboardList size={18} /> Orders
+              </NavLink>
 
-            <NavLink to="/stores" className={linkClass}>
-              <Store size={16} /> Stores
-            </NavLink>
+              <NavLink
+                to="/ResaurantDashboard/live-orders"
+                className={linkClass}
+                onClick={closeSidebar}
+              >
+                <Radio size={18} /> Live Orders
+              </NavLink>
 
-            <NavLink to="/accounting" className={linkClass}>
-              <Calculator size={16} /> Accounting
-            </NavLink>
+              <NavLink
+                to="/ResaurantDashboard/customers"
+                className={linkClass}
+                onClick={closeSidebar}
+              >
+                <Users size={18} /> Customers
+              </NavLink>
 
-            <NavLink to="/customers" className={linkClass}>
-              <Users size={16} /> Customers
-            </NavLink>
+              <NavLink
+                to="/ResaurantDashboard/reviews"
+                className={linkClass}
+                onClick={closeSidebar}
+              >
+                <Star size={18} /> Reviews
+              </NavLink>
 
-            {/* Reports Dropdown */}
-            <button
-              onClick={() => toggle("reports")}
-              className="flex items-center justify-between w-full px-4 py-2.5 rounded-lg hover:bg-orange-600/80"
-            >
-              <span className="flex items-center gap-3">
-                <BarChart3 size={16} /> Reports
-              </span>
-              {dropdown === "reports" ? (
-                <ChevronDown size={16} />
-              ) : (
-                <ChevronRight size={16} />
-              )}
-            </button>
-
-            {dropdown === "reports" && (
-              <>
-                <NavLink to="/product-reviews" className={subLinkClass}>
-                  • Product Reviews
-                </NavLink>
-                <NavLink to="/product-performance" className={subLinkClass}>
-                  • Product Performance Reports
-                </NavLink>
-              </>
-            )}
-
-            <NavLink to="/admin-service-area" className={linkClass}>
-              <Map size={16} /> Admin Service Area
-            </NavLink>
-
-            {/* Chat Dropdown */}
-            <button
-              onClick={() => toggle("chat")}
-              className="flex items-center justify-between w-full px-4 py-2.5 rounded-lg hover:bg-orange-600/80"
-            >
-              <span className="flex items-center gap-3">
-                <MessageCircle size={16} /> Chat
-              </span>
-              {dropdown === "chat" ? (
-                <ChevronDown size={16} />
-              ) : (
-                <ChevronRight size={16} />
-              )}
-            </button>
-
-            {dropdown === "chat" && (
-              <>
-                <NavLink to="/chat-user-vendor" className={subLinkClass}>
-                  • User / Vendor
-                </NavLink>
-                <NavLink to="/chat-user-driver" className={subLinkClass}>
-                  • User / Driver
-                </NavLink>
-              </>
-            )}
+              <NavLink
+                to="/ResaurantDashboard/bookings"
+                className={linkClass}
+                onClick={closeSidebar}
+              >
+                <CalendarDays size={18} /> Table Booking
+              </NavLink>
+            </div>
           </div>
 
-          {/* ================= SETTINGS ================= */}
-<div>
-  <h2 className="text-xs uppercase text-orange-200 mb-3 font-semibold">
-    Settings
-  </h2>
-
-  <NavLink to="/profile" className={linkClass}>
-    <User size={16} /> Profile
-  </NavLink>
-
-  {/* Accounting Security */}
-  <NavLink to="/accounting-security" className={linkClass}>
-    <Shield size={16} /> Accounting Security
-  </NavLink>
-
-  {/* Customize */}
-  <NavLink to="/customize" className={linkClass}>
-    <Sliders size={16} /> Customize
-  </NavLink>
-
-  {/* Catalog */}
-  <NavLink to="/catalog" className={linkClass}>
-    <Package size={16} /> Catalog
-  </NavLink>
-
-  {/* Configurations */}
-  <NavLink to="/configurations" className={linkClass}>
-    <Layers size={16} /> Configurations
-  </NavLink>
-
-  {/* Tax */}
-  <NavLink to="/tax" className={linkClass}>
-    <Percent size={16} /> Tax
-  </NavLink>
-
-  {/* Payment Options */}
-  <NavLink to="/payment-options" className={linkClass}>
-    <CreditCard size={16} /> Payment Options
-  </NavLink>
-
-  {/* Manage Roles */}
-  <NavLink to="/manage-roles" className={linkClass}>
-    <UserCog size={16} /> Manage Roles
-  </NavLink>
-
-  {/* Cache Control */}
-  <NavLink to="/cache-control" className={linkClass}>
-    <Database size={16} /> Cache Control
-  </NavLink>
-
-  {/* Existing Styling Dropdown */}
-  <button
-    onClick={() => toggle("styling")}
-    className="flex items-center justify-between w-full px-4 py-2.5 rounded-lg hover:bg-orange-600/80"
-  >
-    <span className="flex items-center gap-3">
-      <Layers size={16} /> Styling
-    </span>
-    {dropdown === "styling" ? <ChevronDown size={16} /> : <ChevronRight size={16} />}
-  </button>
-
-  {dropdown === "styling" && (
-    <>
-      <NavLink to="/app-styling" className={subLinkClass}>
-        • App Styling
-      </NavLink>
-      <NavLink to="/web-styling" className={subLinkClass}>
-        • Web Styling
-      </NavLink>
-    </>
-  )}
-
-  {/* CMS Dropdown */}
-  <button
-    onClick={() => toggle("cms")}
-    className="flex items-center justify-between w-full px-4 py-2.5 rounded-lg hover:bg-orange-600/80"
-  >
-    <span className="flex items-center gap-3">
-      <FileText size={16} /> CMS
-    </span>
-    {dropdown === "cms" ? <ChevronDown size={16} /> : <ChevronRight size={16} />}
-  </button>
-
-  {dropdown === "cms" && (
-    <>
-      <NavLink to="/pages" className={subLinkClass}>• Pages</NavLink>
-      <NavLink to="/emails" className={subLinkClass}>• Emails</NavLink>
-      <NavLink to="/notifications" className={subLinkClass}>• Notifications</NavLink>
-      <NavLink to="/sms" className={subLinkClass}>• SMS</NavLink>
-      <NavLink to="/reasons" className={subLinkClass}>• Reasons</NavLink>
-    </>
-  )}
-
-  {/* Manage Delivery Dropdown */}
-  <button
-    onClick={() => toggle("delivery")}
-    className="flex items-center justify-between w-full px-4 py-2.5 rounded-lg hover:bg-orange-600/80"
-  >
-    <span className="flex items-center gap-3">
-      <Truck size={16} /> Manage Delivery
-    </span>
-    {dropdown === "delivery" ? <ChevronDown size={16} /> : <ChevronRight size={16} />}
-  </button>
-
-  {dropdown === "delivery" && (
-    <>
-      <NavLink to="/delivery-options" className={subLinkClass}>
-        • Delivery Options
-      </NavLink>
-      <NavLink to="/delivery-slot" className={subLinkClass}>
-        • Delivery Slot
-      </NavLink>
-    </>
-  )}
-</div>
-
-          {/* ================= MARKETING ================= */}
+          {/* MENU MANAGEMENT */}
           <div>
-            <h2 className="text-xs uppercase text-orange-200 mb-3 font-semibold">
-              Marketing
+            <h2 className="text-xs uppercase text-orange-200 mb-3 font-semibold tracking-wider px-1">
+              Menu Management
             </h2>
 
-            {/* Banners Dropdown */}
-            <button
-              onClick={() => toggle("banners")}
-              className="flex items-center justify-between w-full px-4 py-2.5 rounded-lg hover:bg-orange-600/80"
-            >
-              <span className="flex items-center gap-3">
-                <Megaphone size={16} /> Banners
-              </span>
-              {dropdown === "banners" ? <ChevronDown size={16} /> : <ChevronRight size={16} />}
-            </button>
+            <div className="space-y-2">
+              <button
+                onClick={() => toggle("menu")}
+                className="flex items-center justify-between w-full px-4 py-3 rounded-xl hover:bg-orange-500/70 transition-all duration-200"
+              >
+                <span className="flex items-center gap-3 text-sm">
+                  <UtensilsCrossed size={18} /> Menu
+                </span>
+                {dropdown === "menu" ? (
+                  <ChevronDown size={18} />
+                ) : (
+                  <ChevronRight size={18} />
+                )}
+              </button>
 
-            {dropdown === "banners" && (
-              <>
-                <NavLink to="/web-banners" className={subLinkClass}>
-                  • Web Banners
-                </NavLink>
-                <NavLink to="/mobile-banners" className={subLinkClass}>
-                  • Mobile Banners
-                </NavLink>
-              </>
-            )}
+              {dropdown === "menu" && (
+                <div className="space-y-1 mt-1">
+                  <NavLink
+                    to="/ResaurantDashboard/menu/all-items"
+                    className={subLinkClass}
+                    onClick={closeSidebar}
+                  >
+                    • All Items
+                  </NavLink>
+                  <NavLink
+                    to="/ResaurantDashboard/menu/add-item"
+                    className={subLinkClass}
+                    onClick={closeSidebar}
+                  >
+                    • Add Item
+                  </NavLink>
+                  <NavLink
+                    to="/ResaurantDashboard/menu/premium-items"
+                    className={subLinkClass}
+                    onClick={closeSidebar}
+                  >
+                    • Premium Items
+                  </NavLink>
+                  <NavLink
+                    to="/ResaurantDashboard/menu/combo-items"
+                    className={subLinkClass}
+                    onClick={closeSidebar}
+                  >
+                    • Combo Items
+                  </NavLink>
+                </div>
+              )}
 
-            <NavLink to="/promocode" className={linkClass}>
-              <Ticket size={16} /> Promocode
-            </NavLink>
+              <NavLink
+                to="/ResaurantDashboard/categories"
+                className={linkClass}
+                onClick={closeSidebar}
+              >
+                <Grid2x2 size={18} /> Categories
+              </NavLink>
 
-            <NavLink to="/loyalty-cards" className={linkClass}>
-              <Gift size={16} /> Loyalty Cards
-            </NavLink>
+              <NavLink
+                to="/ResaurantDashboard/addons"
+                className={linkClass}
+                onClick={closeSidebar}
+              >
+                <Package size={18} /> Addons
+              </NavLink>
 
-            <NavLink to="/campaigns" className={linkClass}>
-              <BarChart3 size={16} /> Campaigns
-            </NavLink>
+              <NavLink
+                to="/ResaurantDashboard/offers"
+                className={linkClass}
+                onClick={closeSidebar}
+              >
+                <Percent size={18} /> Offers & Discounts
+              </NavLink>
+
+              <NavLink
+                to="/ResaurantDashboard/inventory"
+                className={linkClass}
+                onClick={closeSidebar}
+              >
+                <Warehouse size={18} /> Inventory / Stock
+              </NavLink>
+
+              <NavLink
+                to="/ResaurantDashboard/kitchen-display"
+                className={linkClass}
+                onClick={closeSidebar}
+              >
+                <ChefHat size={18} /> Kitchen Display
+              </NavLink>
+            </div>
           </div>
 
-          {/* ================= EXTRA ================= */}
+          {/* DELIVERY */}
           <div>
-            <h2 className="text-xs uppercase text-orange-200 mb-3 font-semibold">
+            <h2 className="text-xs uppercase text-orange-200 mb-3 font-semibold tracking-wider px-1">
+              Delivery
+            </h2>
+
+            <div className="space-y-2">
+              <button
+                onClick={() => toggle("delivery")}
+                className="flex items-center justify-between w-full px-4 py-3 rounded-xl hover:bg-orange-500/70 transition-all duration-200"
+              >
+                <span className="flex items-center gap-3 text-sm">
+                  <Bike size={18} /> Delivery Management
+                </span>
+                {dropdown === "delivery" ? (
+                  <ChevronDown size={18} />
+                ) : (
+                  <ChevronRight size={18} />
+                )}
+              </button>
+
+              {dropdown === "delivery" && (
+                <div className="space-y-1 mt-1">
+                  <NavLink
+                    to="/ResaurantDashboard/delivery/riders"
+                    className={subLinkClass}
+                    onClick={closeSidebar}
+                  >
+                    • Riders
+                  </NavLink>
+                  <NavLink
+                    to="/ResaurantDashboard/delivery/live-tracking"
+                    className={subLinkClass}
+                    onClick={closeSidebar}
+                  >
+                    • Live Tracking
+                  </NavLink>
+                  <NavLink
+                    to="/ResaurantDashboard/delivery/zones"
+                    className={subLinkClass}
+                    onClick={closeSidebar}
+                  >
+                    • Delivery Zones
+                  </NavLink>
+                  <NavLink
+                    to="/ResaurantDashboard/delivery/charges"
+                    className={subLinkClass}
+                    onClick={closeSidebar}
+                  >
+                    • Delivery Charges
+                  </NavLink>
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* BUSINESS */}
+          <div>
+            <h2 className="text-xs uppercase text-orange-200 mb-3 font-semibold tracking-wider px-1">
+              Business
+            </h2>
+
+            <div className="space-y-2">
+              <NavLink
+                to="/ResaurantDashboard/analytics"
+                className={linkClass}
+                onClick={closeSidebar}
+              >
+                <BarChart3 size={18} /> Analytics
+              </NavLink>
+
+              <NavLink
+                to="/ResaurantDashboard/payments"
+                className={linkClass}
+                onClick={closeSidebar}
+              >
+                <CreditCard size={18} /> Payments / Payouts
+              </NavLink>
+
+              <NavLink
+                to="/ResaurantDashboard/invoices"
+                className={linkClass}
+                onClick={closeSidebar}
+              >
+                <Receipt size={18} /> Taxes & Invoices
+              </NavLink>
+
+              <NavLink
+                to="/ResaurantDashboard/messages"
+                className={linkClass}
+                onClick={closeSidebar}
+              >
+                <MessageCircle size={18} /> Messages
+              </NavLink>
+            </div>
+          </div>
+
+          {/* SETTINGS */}
+          <div>
+            <h2 className="text-xs uppercase text-orange-200 mb-3 font-semibold tracking-wider px-1">
+              Restaurant Settings
+            </h2>
+
+            <div className="space-y-2">
+              <NavLink
+                to="/ResaurantDashboard/restaurant-profile"
+                className={linkClass}
+                onClick={closeSidebar}
+              >
+                <Store size={18} /> Restaurant Profile
+              </NavLink>
+
+              <NavLink
+                to="/ResaurantDashboard/staff-roles"
+                className={linkClass}
+                onClick={closeSidebar}
+              >
+                <UserCog size={18} /> Staff & Roles
+              </NavLink>
+
+              <NavLink
+                to="/ResaurantDashboard/notifications"
+                className={linkClass}
+                onClick={closeSidebar}
+              >
+                <Bell size={18} /> Notifications
+              </NavLink>
+
+              <NavLink
+                to="/ResaurantDashboard/settings"
+                className={linkClass}
+                onClick={closeSidebar}
+              >
+                <Settings size={18} /> General Settings
+              </NavLink>
+            </div>
+          </div>
+
+          {/* EXTRA */}
+          <div>
+            <h2 className="text-xs uppercase text-orange-200 mb-3 font-semibold tracking-wider px-1">
               Extra
             </h2>
 
-            <NavLink to="/tools" className={linkClass}>
-              <Wrench size={16} /> Tools
-            </NavLink>
+            <div className="space-y-2">
+              <NavLink
+                to="/ResaurantDashboard/tools"
+                className={linkClass}
+                onClick={closeSidebar}
+              >
+                <Wrench size={18} /> Tools
+              </NavLink>
 
-            <NavLink to="/db-audit-logs" className={linkClass}>
-              <Database size={16} /> DB Audit Logs
-            </NavLink>
+              <NavLink
+                to="/ResaurantDashboard/support"
+                className={linkClass}
+                onClick={closeSidebar}
+              >
+                <HelpCircle size={18} /> Support / Help
+              </NavLink>
+            </div>
           </div>
-
         </div>
-      </div>
+      </aside>
     </>
   );
 }

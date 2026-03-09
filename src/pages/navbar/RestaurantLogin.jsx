@@ -1,17 +1,43 @@
 import { useState, useRef } from "react";
+import api from "../../api/axios";
 
 export default function RestautrantLogin() {
   const [mobile, setMobile] = useState("");
   const [step, setStep] = useState(1);
   const [otp, setOtp] = useState(new Array(6).fill(""));
   const inputsRef = useRef([]);
+  const [loading, setLoading] = useState(false);
 
-  const handleSendOtp = () => {
-    if (mobile.length < 10) {
+  const handleSendOtp = async () => {
+    if (!/^\d{10}$/.test(mobile)) {
       alert("Enter valid mobile number");
       return;
     }
-    setStep(2);
+
+    try {
+      setLoading(true);
+
+      const res = await api.post("/auth/login", {
+        mobile,
+        role: "restaurant",
+      });
+
+      if (res.data.success) {
+        // agar user already verified hai to direct login ho sakta hai
+        if (!res.data.requiresOtp) {
+          alert("Login Successful 🎉");
+          window.location.href = "/ResaurantDashboard";
+          return;
+        }
+
+        alert("OTP Sent Successfully");
+        setStep(2);
+      }
+    } catch (error) {
+      alert(error.response?.data?.message || "Something went wrong");
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleChange = (element, index) => {
@@ -21,33 +47,47 @@ export default function RestautrantLogin() {
     newOtp[index] = element.value;
     setOtp(newOtp);
 
-    // Move to next input
     if (element.value && index < 5) {
-      inputsRef.current[index + 1].focus();
+      inputsRef.current[index + 1]?.focus();
     }
   };
 
   const handleKeyDown = (e, index) => {
     if (e.key === "Backspace" && !otp[index] && index > 0) {
-      inputsRef.current[index - 1].focus();
+      inputsRef.current[index - 1]?.focus();
     }
   };
 
-  const handleVerify = () => {
+  const handleVerify = async () => {
     const finalOtp = otp.join("");
+
     if (finalOtp.length !== 6) {
-      alert("Enter complete 6 digit OTP");
+      alert("Enter complete OTP");
       return;
     }
 
-    alert("OTP Verified ✅");
+    try {
+      setLoading(true);
+
+      const res = await api.post("/auth/verify-otp", {
+        mobile,
+        otp: finalOtp,
+      });
+
+      if (res.data.success) {
+        alert("Login Successful 🎉");
+        window.location.href = "/ResaurantDashboard";
+      }
+    } catch (error) {
+      alert(error.response?.data?.message || "OTP verification failed");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
     <div className="w-full min-h-screen flex items-center justify-center relative">
-      
-      {/* Background */}
-      <div 
+      <div
         className="absolute inset-0 bg-cover bg-center"
         style={{
           backgroundImage:
@@ -58,8 +98,6 @@ export default function RestautrantLogin() {
       </div>
 
       <div className="relative max-w-7xl w-full grid grid-cols-1 md:grid-cols-2 gap-10 px-6">
-        
-        {/* Left Section */}
         <div className="text-white flex flex-col justify-center">
           <h4 className="uppercase tracking-widest text-orange-400 mb-3">
             Partner with 37 Bite
@@ -70,18 +108,14 @@ export default function RestautrantLogin() {
           </h1>
 
           <p className="mt-4 text-gray-300">
-            Join 37 Bite and grow your restaurant business in Sint Maarten.
+            Join 37 Bite and grow your restaurant business.
           </p>
         </div>
 
-        {/* Right Card */}
         <div className="bg-white rounded-2xl shadow-2xl p-8 max-w-md w-full ml-auto">
-
           {step === 1 && (
             <>
-              <h2 className="text-2xl font-semibold mb-2">
-                Get Started
-              </h2>
+              <h2 className="text-2xl font-semibold mb-2">Get Started</h2>
 
               <p className="text-gray-500 text-sm mb-6">
                 Enter mobile number to continue
@@ -92,30 +126,31 @@ export default function RestautrantLogin() {
                 maxLength={10}
                 placeholder="Enter Mobile number"
                 value={mobile}
-                onChange={(e) => setMobile(e.target.value)}
+                onChange={(e) =>
+                  setMobile(e.target.value.replace(/\D/g, ""))
+                }
                 className="w-full border rounded-lg px-4 py-3 mb-4 focus:outline-none focus:ring-2 focus:ring-orange-500"
               />
 
               <button
                 onClick={handleSendOtp}
-                className="w-full bg-orange-500 text-white py-3 rounded-lg hover:bg-orange-600 transition"
+                disabled={loading}
+                className="w-full bg-orange-500 text-white py-3 rounded-lg hover:bg-orange-600 transition disabled:opacity-70"
               >
-                Continue
+                {loading ? "Sending..." : "Continue"}
               </button>
             </>
           )}
 
           {step === 2 && (
             <>
-              <h2 className="text-2xl font-semibold mb-2">
-                Verify OTP
-              </h2>
+              <h2 className="text-2xl font-semibold mb-2">Verify OTP</h2>
 
               <p className="text-gray-500 text-sm mb-6">
-                Enter 6 digit OTP sent to {mobile}
+                Enter OTP sent to {mobile}
               </p>
 
-              <div className="flex justify-between mb-6">
+              <div className="flex justify-between gap-2 mb-6">
                 {otp.map((data, index) => (
                   <input
                     key={index}
@@ -132,9 +167,10 @@ export default function RestautrantLogin() {
 
               <button
                 onClick={handleVerify}
-                className="w-full bg-orange-500 text-white py-3 rounded-lg hover:bg-orange-600 transition"
+                disabled={loading}
+                className="w-full bg-orange-500 text-white py-3 rounded-lg hover:bg-orange-600 transition disabled:opacity-70"
               >
-                Verify & Submit
+                {loading ? "Verifying..." : "Verify & Submit"}
               </button>
 
               <button
