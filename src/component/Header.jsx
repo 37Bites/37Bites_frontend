@@ -93,7 +93,7 @@ export default function AdminHeader({ onMenuClick }) {
 
           <div className="min-w-0">
             <h1 className="truncate text-sm font-semibold text-gray-800 dark:text-white sm:text-base md:text-xl lg:text-2xl">
-              Welcome, {isAuthenticated ? user?.name || "Admin" : "Guest"}
+              Welcome Restaurant ,{isAuthenticated ? user?.name || "Admin" : "Guest"}
             </h1>
             <p className="truncate text-[10px] text-gray-500 dark:text-gray-400 sm:text-xs">
               {new Date().toDateString()}
