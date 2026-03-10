@@ -7,6 +7,7 @@ import Catering from "./pages/navbar/Catering";
 import Contact from "./pages/navbar/Contact";
 import Menu from "./pages/navbar/Menu";
 import RestautrantLogin from "./pages/navbar/RestaurantLogin";
+import Unauthorized from "./component/Unauthorized"
 
 
 //ResaurantDashboard
@@ -34,10 +35,12 @@ function App() {
           {/* <Route path="/login" element={<AdminLogin/>}/> */}
           <Route path="/resturant-login" element={<RestautrantLogin/>} />
        
-
            </Route>
 
+             
+
            {/* ResaurantDashboard routing */}
+           
             <Route path='/ResaurantDashboard' element={<ResaurantDashboard />}>
             <Route index element={<ResaurantHome/>} />
             <Route path="/ResaurantDashboard/orders" element={<Orders />} />

@@ -29,14 +29,12 @@ export default function RestautrantLogin() {
         role: "restaurant",
       });
 
-      // If already verified → direct login
       if (res.data.user) {
         dispatch(loginSuccess({ user: res.data.user }));
         navigate("/ResaurantDashboard");
         return;
       }
 
-      // OTP required
       if (res.data.requiresOtp) {
         setStep(2);
       }
@@ -64,6 +62,24 @@ export default function RestautrantLogin() {
   const handleKeyDown = (e, index) => {
     if (e.key === "Backspace" && !otp[index] && index > 0) {
       inputsRef.current[index - 1].focus();
+    }
+  };
+
+  // OTP Paste Support
+  const handlePaste = (e) => {
+    const pasteData = e.clipboardData.getData("text").trim();
+
+    if (/^\d{6}$/.test(pasteData)) {
+      const otpDigits = pasteData.split("");
+      setOtp(otpDigits);
+
+      otpDigits.forEach((digit, index) => {
+        if (inputsRef.current[index]) {
+          inputsRef.current[index].value = digit;
+        }
+      });
+
+      inputsRef.current[5]?.focus();
     }
   };
 
@@ -180,6 +196,7 @@ export default function RestautrantLogin() {
                     ref={(el) => (inputsRef.current[index] = el)}
                     onChange={(e) => handleChange(e.target, index)}
                     onKeyDown={(e) => handleKeyDown(e, index)}
+                    onPaste={handlePaste}
                     className="w-12 h-12 border rounded-lg text-center text-lg font-semibold focus:outline-none focus:ring-2 focus:ring-orange-500"
                   />
                 ))}
