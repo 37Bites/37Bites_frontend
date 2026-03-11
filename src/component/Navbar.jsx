@@ -1,36 +1,28 @@
 import React, { useState, useRef, useEffect } from "react";
-import api from "../api/axios";
+import { NavLink, useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { logout } from "../features/auth/authSlice";
 import LoginModal from "../pages/LoginModal";
-import { NavLink } from "react-router-dom";
 
 const Navbar = () => {
+  const navigate = useNavigate();
   const dispatch = useDispatch();
   const { user } = useSelector((state) => state.auth);
 
   const [openModal, setOpenModal] = useState(false);
   const [dropdown, setDropdown] = useState(false);
-
   const dropdownRef = useRef(null);
 
-  
-
-const handleLogout = async () => {
-  try {
-    // call backend logout API
-    await api.post("/auth/logout");
-
-    // clear redux state
-    dispatch(logout());
-
-    // close dropdown
-    setDropdown(false);
-
-  } catch (error) {
-    console.error("Logout failed:", error);
-  }
-};
+  // Logout handler
+  const handleLogout = async () => {
+    try {
+      await api.post("/auth/logout");
+      dispatch(logout());
+      setDropdown(false);
+    } catch (error) {
+      console.error("Logout failed:", error);
+    }
+  };
 
   // Close dropdown on outside click
   useEffect(() => {
@@ -39,7 +31,6 @@ const handleLogout = async () => {
         setDropdown(false);
       }
     };
-
     document.addEventListener("mousedown", handleClickOutside);
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
@@ -49,66 +40,81 @@ const handleLogout = async () => {
   return (
     <>
       <nav className="bg-white shadow-md px-8 py-4 flex justify-between items-center sticky top-0 z-50">
-
         {/* Logo */}
-        <div className="flex items-center gap-3">
+        <div
+          className="flex items-center gap-3 cursor-pointer"
+          onClick={() => navigate("/")}
+        >
           <img
             src="/logo.jpeg"
             alt="37BITES"
-            className="h-14 w-14 object-contain"
+            className="h-14 w-14 object-contain transition-transform hover:scale-110"
           />
-          <h1 className="text-xl font-bold text-gray-700">
+          <h1 className="text-2xl font-bold text-gray-700 hover:text-orange-500 transition">
             37BITES
           </h1>
         </div>
 
-        {/* Menu */}
+        {/* Menu Links */}
         <div className="flex gap-8 text-gray-700 font-medium">
-          
           <NavLink
             to="/Menu"
-            className="hover:text-orange-500 transition"
+            className={({ isActive }) =>
+              `hover:text-orange-500 transition ${isActive ? "text-orange-500" : ""}`
+            }
           >
             Menu
           </NavLink>
           <NavLink
             to="/offers"
-            className="hover:text-orange-500 transition"
+            className={({ isActive }) =>
+              `hover:text-orange-500 transition ${isActive ? "text-orange-500" : ""}`
+            }
           >
             Offers
           </NavLink>
           <NavLink
             to="/catering"
-            className="hover:text-orange-500"
+            className={({ isActive }) =>
+              `hover:text-orange-500 transition ${isActive ? "text-orange-500" : ""}`
+            }
           >
             Catering
           </NavLink>
-          <NavLink to="/about"
-            className="hover:text-orange-500 transition">
+          <NavLink
+            to="/about"
+            className={({ isActive }) =>
+              `hover:text-orange-500 transition ${isActive ? "text-orange-500" : ""}`
+            }
+          >
             About
           </NavLink>
-          <NavLink to="/contact">Contact</NavLink>
-
-          <NavLink to="/resturant-login"
-            className="hover:text-orange-500 transition">
-            Partner with us
+          <NavLink
+            to="/contact"
+            className={({ isActive }) =>
+              `hover:text-orange-500 transition ${isActive ? "text-orange-500" : ""}`
+            }
+          >
+            Contact
           </NavLink>
-          
+          <NavLink
+            to="/resturant-login"
+            className={({ isActive }) =>
+              `hover:text-orange-500 transition ${isActive ? "text-orange-500" : ""}`
+            }
+          >
+            Partner With Us
+          </NavLink>
         </div>
 
         {/* Right Side */}
         <div className="flex items-center gap-4 relative" ref={dropdownRef}>
-
-          <button className="bg-orange-500 text-white px-5 py-2 rounded-xl hover:bg-orange-600 transition">
-            Order Now
-          </button>
-
           {!user ? (
             <button
               onClick={() => setOpenModal(true)}
               className="border border-orange-500 text-orange-500 px-4 py-2 rounded-xl hover:bg-orange-500 hover:text-white transition"
             >
-              My Account
+              Login
             </button>
           ) : (
             <div className="relative">
@@ -121,12 +127,9 @@ const handleLogout = async () => {
 
               {dropdown && (
                 <div className="absolute right-0 mt-2 w-44 bg-white shadow-lg rounded-xl py-2 z-50">
-                  <button
-                    className="block w-full text-left px-4 py-2 hover:bg-gray-100"
-                  >
+                  <button className="block w-full text-left px-4 py-2 hover:bg-gray-100">
                     Profile
                   </button>
-
                   <button
                     onClick={handleLogout}
                     className="block w-full text-left px-4 py-2 hover:bg-gray-100 text-red-500"
@@ -141,9 +144,7 @@ const handleLogout = async () => {
       </nav>
 
       {/* Login Modal */}
-      {openModal && (
-        <LoginModal closeModal={() => setOpenModal(false)} />
-      )}
+      {openModal && <LoginModal closeModal={() => setOpenModal(false)} />}
     </>
   );
 };
