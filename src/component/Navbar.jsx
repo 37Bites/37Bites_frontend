@@ -3,6 +3,7 @@ import { NavLink, useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { logout } from "../features/auth/authSlice";
 import LoginModal from "../pages/LoginModal";
+import api from "../api/axios";
 
 const Navbar = () => {
   const navigate = useNavigate();
@@ -13,12 +14,12 @@ const Navbar = () => {
   const [dropdown, setDropdown] = useState(false);
   const dropdownRef = useRef(null);
 
-  // Logout handler
+  // Logout handler (keeps API call)
   const handleLogout = async () => {
     try {
-      await api.post("/auth/logout");
-      dispatch(logout());
-      setDropdown(false);
+      await api.post("/auth/logout"); // backend logout
+      dispatch(logout());             // clear redux state
+      setDropdown(false);             // close dropdown
     } catch (error) {
       console.error("Logout failed:", error);
     }
@@ -57,46 +58,17 @@ const Navbar = () => {
 
         {/* Menu Links */}
         <div className="flex gap-8 text-gray-700 font-medium">
-          <NavLink
-            to="/Menu"
-            className={({ isActive }) =>
-              `hover:text-orange-500 transition ${isActive ? "text-orange-500" : ""}`
-            }
-          >
-            Menu
-          </NavLink>
-          <NavLink
-            to="/offers"
-            className={({ isActive }) =>
-              `hover:text-orange-500 transition ${isActive ? "text-orange-500" : ""}`
-            }
-          >
-            Offers
-          </NavLink>
-          <NavLink
-            to="/catering"
-            className={({ isActive }) =>
-              `hover:text-orange-500 transition ${isActive ? "text-orange-500" : ""}`
-            }
-          >
-            Catering
-          </NavLink>
-          <NavLink
-            to="/about"
-            className={({ isActive }) =>
-              `hover:text-orange-500 transition ${isActive ? "text-orange-500" : ""}`
-            }
-          >
-            About
-          </NavLink>
-          <NavLink
-            to="/contact"
-            className={({ isActive }) =>
-              `hover:text-orange-500 transition ${isActive ? "text-orange-500" : ""}`
-            }
-          >
-            Contact
-          </NavLink>
+          {["Menu", "Offers", "Catering", "About", "Contact"].map((link) => (
+            <NavLink
+              key={link}
+              to={`/${link.toLowerCase()}`}
+              className={({ isActive }) =>
+                `hover:text-orange-500 transition ${isActive ? "text-orange-500" : ""}`
+              }
+            >
+              {link}
+            </NavLink>
+          ))}
           <NavLink
             to="/resturant-login"
             className={({ isActive }) =>
