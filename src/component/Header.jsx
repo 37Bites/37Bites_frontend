@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
+import api from "../api/axios";
 import {
   Globe,
   User,
@@ -61,10 +62,17 @@ export default function AdminHeader({ onMenuClick }) {
     }
   };
 
-  const handleLogout = () => {
-    dispatch(logout());
-    navigate("/");
-  };
+  const handleLogout = async () => {
+  try {
+    await api.post("/auth/logout"); // your backend logout route
+
+    dispatch(logout()); // clear redux
+    navigate("/"); // redirect
+
+  } catch (error) {
+    console.error("Logout failed:", error);
+  }
+};
 
   const userInitial = user?.name?.charAt(0)?.toUpperCase() || "A";
 

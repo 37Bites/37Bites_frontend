@@ -14,7 +14,7 @@ const [otp, setOtp] = useState("");
 const [otpArray, setOtpArray] = useState(["","","","","",""]);
 const [step,setStep] = useState("login");
 const [loading,setLoading] = useState(false);
-
+const [errorMessage, setErrorMessage] = useState("");
 
 // MOBILE VALIDATION
 const handleMobileChange = (e)=>{
@@ -80,34 +80,29 @@ return;
 
 setLoading(true);
 
-try{
+try {
+  const res = await api.post("/auth/login", {
+    mobile: mobile.trim(),
+    role: "user"
+  });
 
-const res = await api.post("/auth/login",{
-mobile: mobile.trim(),
-role:"user"
-});
+  if(res.data.requiresOtp){
+    setStep("otp");
+    setErrorMessage(""); // clear previous errors
+    return;
+  }
 
-if(res.data.requiresOtp){
-setStep("otp");
-return;
-}
+  if(res.data.user){
+    dispatch(loginSuccess({ user: res.data.user }));
+    closeModal();
+    navigate("/");
+  }
 
-if(res.data.user){
-
-dispatch(loginSuccess({user:res.data.user}));
-
-closeModal();
-
-navigate("/");
-
-}
-
-}catch(err){
-
-alert(err.response?.data?.message || "Login failed");
-
-}finally{
-setLoading(false);
+} catch(err) {
+  // Show backend message inline
+  setErrorMessage(err.response?.data?.message || "Login failed");
+} finally {
+  setLoading(false);
 }
 
 };
@@ -126,28 +121,23 @@ return;
 
 setLoading(true);
 
-try{
+try {
+  const res = await api.post("/auth/verify-otp", {
+    mobile,
+    otp,
+    role: "user"
+  });
 
-const res = await api.post("/auth/verify-otp",{
-mobile,
-otp,
-role:"user"
-});
+  const { user } = res.data;
 
-const {user} = res.data;
+  dispatch(loginSuccess({ user }));
+  closeModal();
+  navigate("/");
 
-dispatch(loginSuccess({user}));
-
-closeModal();
-
-navigate("/");
-
-}catch(err){
-
-alert(err.response?.data?.message || "Invalid OTP");
-
-}finally{
-setLoading(false);
+} catch(err) {
+  setErrorMessage(err.response?.data?.message || "Invalid OTP");
+} finally {
+  setLoading(false);
 }
 
 };
@@ -214,7 +204,11 @@ className="w-full p-3 outline-none"
 
 </div>
 
-
+{errorMessage && (
+  <p className="text-sm text-red-500 text-center mb-4">
+    {errorMessage}
+  </p>
+)}
 <button
 type="submit"
 disabled={loading}

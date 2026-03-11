@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect } from "react";
+import api from "../api/axios";
 import { useSelector, useDispatch } from "react-redux";
 import { logout } from "../features/auth/authSlice";
 import LoginModal from "../pages/LoginModal";
@@ -13,10 +14,23 @@ const Navbar = () => {
 
   const dropdownRef = useRef(null);
 
-  const handleLogout = () => {
+  
+
+const handleLogout = async () => {
+  try {
+    // call backend logout API
+    await api.post("/auth/logout");
+
+    // clear redux state
     dispatch(logout());
+
+    // close dropdown
     setDropdown(false);
-  };
+
+  } catch (error) {
+    console.error("Logout failed:", error);
+  }
+};
 
   // Close dropdown on outside click
   useEffect(() => {
