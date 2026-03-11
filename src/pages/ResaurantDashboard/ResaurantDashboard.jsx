@@ -1,20 +1,52 @@
+import { useEffect, useState } from "react";
 import Sidebar from "../../component/Sidebar";
 import Header from "../../component/Header";
 import { Outlet } from "react-router-dom";
+import api from "../../api/axios";
 
 export default function ResaurantDashboard() {
+  const [collapsed, setCollapsed] = useState(false);
+  const [restaurantProfile, setRestaurantProfile] = useState(null);
+
+  useEffect(() => {
+    const fetchRestaurantProfile = async () => {
+      try {
+        const res = await api.get("/restaurant/profile");
+        setRestaurantProfile(res?.data?.data || null);
+      } catch (error) {
+        console.error("Restaurant profile fetch error:", error);
+      }
+    };
+
+    fetchRestaurantProfile();
+  }, []);
+
   return (
-    <div className="flex min-h-screen bg-white text-gray-800">
-      <Sidebar />
+    <div className="min-h-screen bg-white text-gray-800">
+      
+      {/* Sidebar */}
+      <Sidebar collapsed={collapsed} setCollapsed={setCollapsed} />
 
-      <div className="flex flex-col flex-1 lg:ml-72 min-w-0">
-        <div className="fixed top-0 left-0 lg:left-72 right-0 z-40 h-16">
-          <Header />
-        </div>
+      {/* Main Layout */}
+      <div
+        className={`min-h-screen transition-all duration-300 ${
+          collapsed ? "lg:pl-24" : "lg:pl-72"
+        }`}
+      >
+        
+        {/* Header */}
+        <Header
+          collapsed={collapsed}
+          restaurantProfile={restaurantProfile}
+        />
 
-        <main className="flex-1 mt-16 p-4 sm:p-5 md:p-6 bg-slate-50 overflow-x-hidden">
-          <Outlet />
+        {/* Page Content */}
+        <main className="pt-[78px]">
+          <div className="min-h-[calc(100vh-78px)] bg-white p-4 sm:p-6">
+            <Outlet />
+          </div>
         </main>
+
       </div>
     </div>
   );

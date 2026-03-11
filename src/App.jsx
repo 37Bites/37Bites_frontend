@@ -17,6 +17,7 @@ import Orders from "./pages/ResaurantDashboard/Orders"
 import LiveOrders from "./pages/ResaurantDashboard/LiveOrders";
 import Customers from "./pages/ResaurantDashboard/Customers";
 import Reviews from "./pages/ResaurantDashboard/Reviews";
+import ProfilePage from "./pages/ResaurantDashboard/ProfilePage";
 
 function App() {
   return (
@@ -47,6 +48,7 @@ function App() {
              <Route path="/ResaurantDashboard/live-orders" element={<LiveOrders />} />
              <Route path="/ResaurantDashboard/customers" element={<Customers />} />
               <Route path="/ResaurantDashboard/reviews" element={<Reviews />} />
+               <Route path="/ResaurantDashboard/restaurant-profile" element={<ProfilePage />} />
               </Route>
 
       </Routes>

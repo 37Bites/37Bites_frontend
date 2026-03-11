@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import api from "../api/axios";
+ import api from "../api/axios";
 import {
   Globe,
   User,
@@ -8,35 +8,28 @@ import {
   ChevronDown,
   Shield,
   Bell,
-  Moon,
-  Sun,
   Menu,
 } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
 import { logout } from "../features/auth/authSlice";
 import { useNavigate } from "react-router-dom";
 
-export default function AdminHeader({ onMenuClick }) {
+export default function Header({
+  onMenuClick,
+  collapsed = false,
+  adminProfile
+}) {
   const [profileOpen, setProfileOpen] = useState(false);
-  const [darkMode, setDarkMode] = useState(false);
   const [notifications] = useState(3);
-
+  
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const profileRef = useRef(null);
 
-  const { user, isAuthenticated } = useSelector((state) => state.auth);
-
-  useEffect(() => {
-    const savedTheme = localStorage.getItem("admin-theme");
-    if (savedTheme === "dark") {
-      setDarkMode(true);
-      document.documentElement.classList.add("dark");
-    } else {
-      setDarkMode(false);
-      document.documentElement.classList.remove("dark");
-    }
-  }, []);
+  const { user, isAuthenticated, lastLogin } = useSelector(
+    (state) => state.auth
+  );
+  const profile = adminProfile || user;
 
   useEffect(() => {
     const handleClickOutside = (e) => {
@@ -49,35 +42,31 @@ export default function AdminHeader({ onMenuClick }) {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  const toggleDarkMode = () => {
-    const nextTheme = !darkMode;
-    setDarkMode(nextTheme);
+ 
 
-    if (nextTheme) {
-      document.documentElement.classList.add("dark");
-      localStorage.setItem("admin-theme", "dark");
-    } else {
-      document.documentElement.classList.remove("dark");
-      localStorage.setItem("admin-theme", "light");
-    }
-  };
-
-  const handleLogout = async () => {
+const handleLogout = async () => {
   try {
-    await api.post("/auth/logout"); // your backend logout route
+    // call backend logout api
+    await api.post("/admin/logout"); // adjust route if different
 
-    dispatch(logout()); // clear redux
-    navigate("/"); // redirect
+    // clear redux state
+    dispatch(logout());
+
+    // redirect to admin login
+    navigate("/secure-admin-login");
 
   } catch (error) {
-    console.error("Logout failed:", error);
+    console.error("Admin logout failed:", error);
   }
 };
 
-  const userInitial = user?.name?.charAt(0)?.toUpperCase() || "A";
+  const userInitial = profile?.name?.charAt(0)?.toUpperCase() || "A";
 
-  const formattedLastLogin = user?.lastLoginAt || user?.lastLogin
-    ? new Date(user.lastLoginAt || user.lastLogin).toLocaleString("en-IN", {
+  const profileImage =
+    profile?.profileImage?.url || profile?.profilePhoto?.url || profile?.avatar || "";
+
+  const formattedLastLogin = lastLogin
+    ? new Date(lastLogin).toLocaleString("en-IN", {
         day: "2-digit",
         month: "short",
         year: "numeric",
@@ -88,39 +77,39 @@ export default function AdminHeader({ onMenuClick }) {
     : "First Login";
 
   return (
-    <header className="fixed left-0 right-0 top-0 z-40 border-b border-gray-200 bg-white/90 backdrop-blur-md dark:border-gray-800 dark:bg-gray-900/90 md:left-72">
+    <header
+      className={`fixed top-0 right-0 z-30 border-b border-gray-200 bg-white/95 backdrop-blur-md transition-all duration-300 ${
+        collapsed ? "lg:left-24" : "lg:left-72"
+      } left-0`}
+    >
       <div className="flex min-h-[70px] items-center justify-between gap-3 px-3 py-3 sm:px-4 md:px-6 lg:px-8">
         {/* LEFT */}
         <div className="flex min-w-0 items-center gap-2 sm:gap-3">
           <button
+            type="button"
             onClick={onMenuClick}
-            className="rounded-xl p-2 text-gray-600 transition hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-800 md:hidden"
+            className="rounded-xl p-2 text-gray-600 transition hover:bg-gray-100 lg:hidden"
           >
             <Menu size={20} />
           </button>
 
           <div className="min-w-0">
-            <h1 className="truncate text-sm font-semibold text-gray-800 dark:text-white sm:text-base md:text-xl lg:text-2xl">
-              Welcome Restaurant ,{isAuthenticated ? user?.name || "Admin" : "Guest"}
+            <h1 className="truncate text-sm font-semibold text-gray-800 sm:text-base md:text-xl lg:text-2xl">
+              Welcome, {isAuthenticated ? user?.name || "Admin" : "Guest"}
             </h1>
-            <p className="truncate text-[10px] text-gray-500 dark:text-gray-400 sm:text-xs">
-              {new Date().toDateString()}
+            <p className="truncate text-[10px] text-gray-500 sm:text-xs">
+              Last Login: {formattedLastLogin}
             </p>
           </div>
         </div>
 
         {/* RIGHT */}
         <div className="flex shrink-0 items-center gap-1 sm:gap-2 md:gap-3 lg:gap-5">
-          {/* Dark Mode */}
-          <button
-            onClick={toggleDarkMode}
-            className="rounded-xl p-2 text-gray-600 transition hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-800"
-          >
-            {darkMode ? <Sun size={18} /> : <Moon size={18} />}
-          </button>
-
           {/* Notifications */}
-          <button className="relative rounded-xl p-2 text-gray-600 transition hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-800">
+          <button
+            type="button"
+            className="relative rounded-xl p-2 text-gray-600 transition hover:bg-gray-100"
+          >
             <Bell size={18} />
             {notifications > 0 && (
               <span className="absolute -right-1 -top-1 flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-[10px] font-semibold text-white">
@@ -130,7 +119,7 @@ export default function AdminHeader({ onMenuClick }) {
           </button>
 
           {/* Website Link */}
-          <div className="hidden items-center gap-2 text-sm text-gray-600 dark:text-gray-300 xl:flex">
+          <div className="hidden items-center gap-2 text-sm text-gray-600 xl:flex">
             <Globe size={16} />
             <a
               href="https://37-bites-frontend.vercel.app/"
@@ -145,19 +134,32 @@ export default function AdminHeader({ onMenuClick }) {
           {/* Profile */}
           <div className="relative" ref={profileRef}>
             <button
+              type="button"
               onClick={() => setProfileOpen((prev) => !prev)}
-              className="flex items-center gap-2 rounded-2xl px-1 py-1 transition hover:bg-gray-50 dark:hover:bg-gray-800 sm:px-2"
+              className="flex items-center gap-2 rounded-2xl px-1 py-1 transition hover:bg-gray-50 sm:px-2"
             >
               <div className="relative">
-                <div className="flex h-9 w-9 items-center justify-center rounded-full bg-orange-500 text-sm font-semibold text-white sm:h-10 sm:w-10">
-                  {userInitial}
-                </div>
+                {profileImage ? (
+                  <img
+                    src={profileImage}
+                    alt={user?.name || "Admin"}
+                    className="h-9 w-9 rounded-full object-cover ring-2 ring-orange-100 sm:h-10 sm:w-10"
+                  />
+                ) : (
+                  <div className="flex h-9 w-9 items-center justify-center rounded-full bg-orange-500 text-sm font-semibold text-white sm:h-10 sm:w-10">
+                    {userInitial}
+                  </div>
+                )}
 
-                <span className="absolute bottom-0 right-0 h-3 w-3 rounded-full border-2 border-white bg-green-500 dark:border-gray-900" />
+                <span
+                  className={`absolute bottom-0 right-0 h-3 w-3 rounded-full border-2 border-white ${
+                    isAuthenticated ? "bg-green-500" : "bg-gray-400"
+                  }`}
+                />
               </div>
 
               <div className="hidden text-left lg:block">
-                <p className="max-w-[140px] truncate text-sm font-medium text-gray-800 dark:text-white">
+                <p className="max-w-[140px] truncate text-sm font-medium text-gray-800">
                   {user?.name || "Admin"}
                 </p>
                 <span className="rounded-full bg-orange-100 px-2 py-0.5 text-xs capitalize text-orange-600">
@@ -167,41 +169,57 @@ export default function AdminHeader({ onMenuClick }) {
 
               <ChevronDown
                 size={16}
-                className={`hidden text-gray-600 transition-transform dark:text-gray-300 sm:block ${
+                className={`hidden text-gray-600 transition-transform sm:block ${
                   profileOpen ? "rotate-180" : ""
                 }`}
               />
             </button>
 
             {profileOpen && (
-              <div className="absolute right-0 mt-3 w-[290px] max-w-[calc(100vw-20px)] overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-2xl dark:border-gray-700 dark:bg-gray-900 sm:w-80">
+              <div className="absolute right-0 mt-3 w-[290px] max-w-[calc(100vw-20px)] overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-2xl sm:w-80">
                 {/* User Info */}
-                <div className="border-b border-gray-200 px-4 py-4 dark:border-gray-700 sm:px-5">
+                <div className="border-b border-gray-200 px-4 py-4 sm:px-5">
                   <div className="mb-4 flex items-center gap-3">
-                    <div className="flex h-12 w-12 items-center justify-center rounded-full bg-orange-500 text-base font-bold text-white sm:h-14 sm:w-14 sm:text-lg">
-                      {userInitial}
-                    </div>
+                    {profileImage ? (
+                      <img
+                        src={profileImage}
+                        alt={user?.name || "Admin"}
+                        className="h-12 w-12 rounded-full object-cover ring-2 ring-orange-100 sm:h-14 sm:w-14"
+                      />
+                    ) : (
+                      <div className="flex h-12 w-12 items-center justify-center rounded-full bg-orange-500 text-base font-bold text-white sm:h-14 sm:w-14 sm:text-lg">
+                        {userInitial}
+                      </div>
+                    )}
 
                     <div className="min-w-0">
-                      <p className="truncate text-base font-semibold text-gray-800 dark:text-white">
+                      <p className="truncate text-base font-semibold text-gray-800">
                         {user?.name || "Admin"}
                       </p>
-                      <p className="truncate text-xs text-gray-500 dark:text-gray-400">
+                      <p className="truncate text-xs text-gray-500">
                         {user?.email || "No Email"}
                       </p>
                     </div>
                   </div>
 
-                  <div className="space-y-2 text-sm text-gray-600 dark:text-gray-300">
-                    <p className="break-words">📱 {user?.mobile || "Not Available"}</p>
-                    <p className="break-words">🕒 Last Login: {formattedLastLogin}</p>
+                  <div className="space-y-2 text-sm text-gray-600">
+                    <p className="break-words">
+                      📱 {user?.mobile || "Not Available"}
+                    </p>
+                    <p className="break-words">
+                      🕒 Last Login: {formattedLastLogin}
+                    </p>
                     <p className="flex items-center gap-2 break-words">
                       <Shield size={14} />
                       Role: {user?.role || "Administrator"}
                     </p>
                     <p>
                       Status:{" "}
-                      <span className="font-medium text-green-600">
+                      <span
+                        className={`font-medium ${
+                          isAuthenticated ? "text-green-600" : "text-red-500"
+                        }`}
+                      >
                         {isAuthenticated ? "Active" : "Logged Out"}
                       </span>
                     </p>
@@ -211,30 +229,33 @@ export default function AdminHeader({ onMenuClick }) {
                 {/* Actions */}
                 <div className="py-2">
                   <button
+                    type="button"
                     onClick={() => {
                       setProfileOpen(false);
-                      navigate("/admin/profile");
+                      navigate("/ResaurantDashboard/restaurant-profile");
                     }}
-                    className="flex w-full items-center gap-3 px-4 py-3 text-sm text-gray-700 transition hover:bg-gray-50 dark:text-gray-200 dark:hover:bg-gray-800 sm:px-5"
+                    className="flex w-full items-center gap-3 px-4 py-3 text-sm text-gray-700 transition hover:bg-gray-50 sm:px-5"
                   >
                     <User size={16} />
                     Profile Settings
                   </button>
 
                   <button
+                    type="button"
                     onClick={() => {
                       setProfileOpen(false);
                       navigate("/admin/settings");
                     }}
-                    className="flex w-full items-center gap-3 px-4 py-3 text-sm text-gray-700 transition hover:bg-gray-50 dark:text-gray-200 dark:hover:bg-gray-800 sm:px-5"
+                    className="flex w-full items-center gap-3 px-4 py-3 text-sm text-gray-700 transition hover:bg-gray-50 sm:px-5"
                   >
                     <Settings size={16} />
                     Account Settings
                   </button>
 
                   <button
+                    type="button"
                     onClick={handleLogout}
-                    className="flex w-full items-center gap-3 px-4 py-3 text-sm text-red-500 transition hover:bg-red-50 dark:hover:bg-red-950/40 sm:px-5"
+                    className="flex w-full items-center gap-3 px-4 py-3 text-sm text-red-500 transition hover:bg-red-50 sm:px-5"
                   >
                     <LogOut size={16} />
                     Logout
