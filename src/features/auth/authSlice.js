@@ -1,13 +1,13 @@
 import { createSlice } from "@reduxjs/toolkit";
 
-// 🔹 Load from localStorage
 const storedAuth = JSON.parse(localStorage.getItem("auth"));
 
 const initialState = {
   user: storedAuth?.user || null,
   accessToken: storedAuth?.accessToken || null,
   refreshToken: storedAuth?.refreshToken || null,
-  isAuthenticated: storedAuth ? true : false,
+  lastLogin: storedAuth?.lastLogin || null,
+  isAuthenticated: !!storedAuth?.user,
 };
 
 const authSlice = createSlice({
@@ -15,17 +15,43 @@ const authSlice = createSlice({
   initialState,
   reducers: {
     loginSuccess: (state, action) => {
-      const { user, accessToken, refreshToken } = action.payload;
+      const payload = action.payload || {};
+      const user = payload.user || null;
+      const accessToken = payload.accessToken || null;
+      const refreshToken = payload.refreshToken || null;
+      const lastLogin = new Date().toISOString();
 
       state.user = user;
       state.accessToken = accessToken;
       state.refreshToken = refreshToken;
-      state.isAuthenticated = true;
+      state.lastLogin = lastLogin;
+      state.isAuthenticated = !!user;
 
-      // ✅ Save to localStorage
       localStorage.setItem(
         "auth",
-        JSON.stringify({ user, accessToken, refreshToken })
+        JSON.stringify({
+          user,
+          accessToken,
+          refreshToken,
+          lastLogin,
+        })
+      );
+    },
+
+    updateUser: (state, action) => {
+      state.user = {
+        ...state.user,
+        ...action.payload,
+      };
+
+      localStorage.setItem(
+        "auth",
+        JSON.stringify({
+          user: state.user,
+          accessToken: state.accessToken,
+          refreshToken: state.refreshToken,
+          lastLogin: state.lastLogin,
+        })
       );
     },
 
@@ -33,13 +59,13 @@ const authSlice = createSlice({
       state.user = null;
       state.accessToken = null;
       state.refreshToken = null;
+      state.lastLogin = null;
       state.isAuthenticated = false;
 
-      // ✅ Clear localStorage
       localStorage.removeItem("auth");
     },
   },
 });
 
-export const { loginSuccess, logout } = authSlice.actions;
+export const { loginSuccess, updateUser, logout } = authSlice.actions;
 export default authSlice.reducer;
