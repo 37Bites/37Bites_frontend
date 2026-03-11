@@ -4,6 +4,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { logout } from "../features/auth/authSlice";
 import LoginModal from "../pages/LoginModal";
 import api from "../api/axios";
+import { FaUserCircle } from "react-icons/fa"; // profile icon
 
 const Navbar = () => {
   const navigate = useNavigate();
@@ -14,12 +15,12 @@ const Navbar = () => {
   const [dropdown, setDropdown] = useState(false);
   const dropdownRef = useRef(null);
 
-  // Logout handler (keeps API call)
+  // Logout handler
   const handleLogout = async () => {
     try {
-      await api.post("/auth/logout"); // backend logout
-      dispatch(logout());             // clear redux state
-      setDropdown(false);             // close dropdown
+      await api.post("/auth/logout");
+      dispatch(logout());
+      setDropdown(false);
     } catch (error) {
       console.error("Logout failed:", error);
     }
@@ -63,7 +64,9 @@ const Navbar = () => {
               key={link}
               to={`/${link.toLowerCase()}`}
               className={({ isActive }) =>
-                `hover:text-orange-500 transition ${isActive ? "text-orange-500" : ""}`
+                `hover:text-orange-500 transition ${
+                  isActive ? "text-orange-500" : ""
+                }`
               }
             >
               {link}
@@ -92,9 +95,9 @@ const Navbar = () => {
             <div className="relative">
               <button
                 onClick={() => setDropdown((prev) => !prev)}
-                className="border border-orange-500 text-orange-500 px-4 py-2 rounded-xl hover:bg-orange-500 hover:text-white transition"
+                className="text-orange-500 hover:text-orange-600 transition text-2xl"
               >
-                {user.role?.toUpperCase()}
+                <FaUserCircle /> {/* Profile icon */}
               </button>
 
               {dropdown && (
